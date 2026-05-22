@@ -1102,7 +1102,27 @@ function renderFinanzas() {
   const c=$('content'); c.innerHTML='';
   const y=new Date().getFullYear(); const m=state.mes; const mesNum=m+1;
   const CATS_GASTO2=['Comida','Ropa','Transporte','Salud','Ocio','Casa','Suscripciones','Alemán','Varios','Ahorro'];
-  const CATS_ING=['Sueldo','Freelance','VWFF','MaMis','Otros'];
+  const OPCIONES_FIJOS=[
+    {nombre:'Alquiler',        emoji:'🏠', monto:0},
+    {nombre:'BVG (transporte)',emoji:'🚇', monto:63},
+    {nombre:'FitX',            emoji:'🏋️', monto:29},
+    {nombre:'Adobe',           emoji:'🎨', monto:34.99},
+    {nombre:'ChatGPT',         emoji:'🤖', monto:23},
+    {nombre:'Google Drive',    emoji:'☁️', monto:8.62},
+    {nombre:'Canva',           emoji:'✏️', monto:6},
+    {nombre:'CapCut',          emoji:'🎬', monto:11.89},
+    {nombre:'Ionos (VWFF)',    emoji:'🌐', monto:10},
+    {nombre:'Speakyeasy 1',    emoji:'🗣️', monto:61.59},
+    {nombre:'Deutsche Bahn',   emoji:'🚂', monto:21.44},
+    {nombre:'Zalando',         emoji:'👗', monto:20.69},
+    {nombre:'Flyeralarm',      emoji:'🖨️', monto:21.99},
+    {nombre:'Médicos',         emoji:'💊', monto:10},
+    {nombre:'Seguro',          emoji:'🛡️', monto:0},
+    {nombre:'Teléfono',        emoji:'📱', monto:0},
+    {nombre:'Internet',        emoji:'📡', monto:0},
+    {nombre:'Otro fijo',       emoji:'📌', monto:0},
+  ];
+  const CATS_ING=['MaMis en Movimiento','Vierte Welle','Freelance','FZM','Otro'];
 
   // Mes selector
   const mesRow=div('',[],`display:flex;gap:4px;margin-bottom:16px;flex-wrap:wrap`);
@@ -1152,16 +1172,31 @@ function renderFinanzas() {
   ingHdr.appendChild(btn('+ Agregar','',()=>{state.showIngForm=!state.showIngForm;render();},'font-size:12px;padding:5px 10px;background:#dcfce7;color:#15803d;border:1px solid #86efac;border-radius:7px'));
   ingCard.appendChild(ingHdr);
   if(state.showIngForm){
-    const f=div('',[],`display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap`);
-    const dInp=el('input',{id:'ing-desc',placeholder:'Descripción',style:'flex:2;min-width:120px;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;font-size:13px;background:#f8fafc;color:#0f172a;outline:none'});
-    const mInp=el('input',{id:'ing-monto',type:'number',placeholder:'€',style:'flex:1;min-width:80px;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;font-size:13px;background:#f8fafc;color:#0f172a;outline:none'});
+    const f=div('',[],`margin-bottom:10px`);
+    // Quick category buttons
+    const catBtns=div('',[],`display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px`);
+    CATS_ING.forEach(cat=>{
+      const cb=btn(cat,'',()=>{
+        const m=prompt(`Monto de "${cat}" en ${MESES[m]}:`,'');
+        if(!m||isNaN(m)) return;
+        state.movs.unshift({id:uid(),desc:cat,monto:Number(m),tipo:'ingreso',cat,fecha:mesKey+'-01'});
+        state.showIngForm=false; save(); showToast('✓ Ingreso guardado'); render();
+      },`padding:7px 12px;border-radius:8px;font-size:12px;border:1px solid #86efac;background:#f0fdf4;color:#15803d;cursor:pointer;font-family:inherit`);
+      catBtns.appendChild(cb);
+    });
+    f.appendChild(catBtns);
+    // Manual
+    const mrow=div('',[],`display:flex;gap:6px`);
+    const dInp=el('input',{id:'ing-desc',placeholder:'Descripción',style:'flex:2;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;font-size:13px;background:#f8fafc;color:#0f172a;outline:none'});
+    const mInp=el('input',{id:'ing-monto',type:'number',placeholder:'€',style:'flex:1;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;font-size:13px;background:#f8fafc;color:#0f172a;outline:none'});
     const saveBtn=btn('✓','',()=>{
       const desc=$('ing-desc').value.trim(); const monto=$('ing-monto').value;
       if(!desc||!monto) return;
-      state.movs.unshift({id:uid(),desc,monto:Number(monto),tipo:'ingreso',cat:'Sueldo',fecha:mesKey+'-01'});
+      state.movs.unshift({id:uid(),desc,monto:Number(monto),tipo:'ingreso',cat:desc,fecha:mesKey+'-01'});
       state.showIngForm=false; save(); showToast('✓ Ingreso guardado'); render();
-    },'background:#15803d;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:14px;font-weight:700');
-    f.appendChild(dInp); f.appendChild(mInp); f.appendChild(saveBtn);
+    },'background:#15803d;color:#fff;border:none;border-radius:8px;padding:8px 12px;font-size:14px;font-weight:700');
+    mrow.appendChild(dInp); mrow.appendChild(mInp); mrow.appendChild(saveBtn);
+    f.appendChild(mrow);
     ingCard.appendChild(f);
   }
   if(!ingDelMes.length){
@@ -1192,20 +1227,44 @@ function renderFinanzas() {
   fijHdr.appendChild(btn('+ Agregar','',()=>{state.showFijForm=!state.showFijForm;render();},'font-size:12px;padding:5px 10px;background:#fee2e2;color:#b91c1c;border:1px solid #fca5a5;border-radius:7px'));
   fijCard.appendChild(fijHdr);
   if(state.showFijForm){
-    const f=div('',[],`display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap`);
-    const dInp=el('input',{id:'fij-desc',placeholder:'Ej: Alquiler, Netflix...',style:'flex:2;min-width:120px;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;font-size:13px;background:#f8fafc;color:#0f172a;outline:none'});
-    const mInp=el('input',{id:'fij-monto',type:'number',placeholder:'€/mes',style:'flex:1;min-width:80px;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;font-size:13px;background:#f8fafc;color:#0f172a;outline:none'});
+    // Picker grid
+    const pickerWrap=div('',[],`margin-bottom:12px`);
+    pickerWrap.appendChild(el('div',{style:'font-size:11px;color:#94a3b8;margin-bottom:8px'},['Elegí o escribí uno propio:']));
+    const pickerGrid=div('',[],`display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px`);
+    OPCIONES_FIJOS.forEach(op=>{
+      const already=state.gastosFijos.find(g=>g.nombre===op.nombre);
+      const opBtn=el('button',{style:`padding:6px 10px;border-radius:8px;font-size:12px;border:1px solid ${already?'#15803d':'#e2e8f0'};background:${already?'#dcfce7':'#f8fafc'};color:${already?'#15803d':'#475569'};cursor:pointer;font-family:inherit`},[`${op.emoji} ${op.nombre}${op.monto?` €${op.monto}`:''}`]);
+      opBtn.addEventListener('click',()=>{
+        if(already){ state.gastosFijos=state.gastosFijos.filter(g=>g.nombre!==op.nombre); save(); render(); return; }
+        const monto=op.monto||0;
+        if(monto===0){
+          const m=prompt(`Monto mensual para "${op.nombre}" (€):`,'');
+          if(!m) return;
+          state.gastosFijos.push({id:uid(),nombre:op.nombre,monto:Number(m),cat:'Fijo'});
+        } else {
+          state.gastosFijos.push({id:uid(),nombre:op.nombre,monto,cat:'Fijo'});
+        }
+        save(); showToast('✓ Agregado'); render();
+      });
+      pickerGrid.appendChild(opBtn);
+    });
+    pickerWrap.appendChild(pickerGrid);
+    // Manual add
+    const mf=div('',[],`display:flex;gap:6px`);
+    const dInp=el('input',{id:'fij-desc',placeholder:'Otro gasto fijo...',style:'flex:2;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;font-size:13px;background:#f8fafc;color:#0f172a;outline:none'});
+    const mInp=el('input',{id:'fij-monto',type:'number',placeholder:'€/mes',style:'flex:1;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;font-size:13px;background:#f8fafc;color:#0f172a;outline:none'});
     const saveBtn=btn('✓','',()=>{
       const desc=$('fij-desc').value.trim(); const monto=$('fij-monto').value;
       if(!desc||!monto) return;
       state.gastosFijos.push({id:uid(),nombre:desc,monto:Number(monto),cat:'Fijo'});
-      state.showFijForm=false; save(); showToast('✓ Gasto fijo guardado'); render();
-    },'background:#b91c1c;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:14px;font-weight:700');
-    f.appendChild(dInp); f.appendChild(mInp); f.appendChild(saveBtn);
-    fijCard.appendChild(f);
+      save(); showToast('✓ Guardado'); render();
+    },'background:#b91c1c;color:#fff;border:none;border-radius:8px;padding:8px 12px;font-size:14px;font-weight:700');
+    mf.appendChild(dInp); mf.appendChild(mInp); mf.appendChild(saveBtn);
+    pickerWrap.appendChild(mf);
+    fijCard.appendChild(pickerWrap);
   }
   if(!state.gastosFijos.length){
-    fijCard.appendChild(el('div',{style:'font-size:12px;color:#94a3b8;padding:6px 0'},['Agregá tus gastos fijos mensuales (alquiler, suscripciones, etc.)']));
+    fijCard.appendChild(el('div',{style:'font-size:12px;color:#94a3b8;padding:6px 0'},['Tocá "+ Agregar" para seleccionar tus gastos fijos mensuales']));
   } else {
     state.gastosFijos.forEach((g,i)=>{
       const row=div('',[],`display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f1f5f9`);
