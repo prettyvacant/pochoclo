@@ -1198,38 +1198,26 @@ function renderFinanzas() {
     [
       {label:'50% Necesidades',  desc:'Gastos fijos',        target:nec50, real:gastado_nec, pct:pctFijos, color:'#3b82f6'},
       {label:'30% Estilo de vida',desc:'Gastos variables',   target:dis30, real:gastado_dis, pct:pctVar,   color:'#a855f7'},
-      {label:'20% Ahorro',        desc:'Lo que queda libre', target:aho20, real:gastado_aho, pct:pctAho,   color:'#22c55e'},
     ].forEach(function(row2){
       const ok = row2.real <= row2.target;
       const resto = row2.target - row2.real;
       const wrap=div('',[],`margin-bottom:16px`);
-
-      // Label + límite (pequeño)
       const top=div('',[],`display:flex;justify-content:space-between;align-items:center;margin-bottom:8px`);
       const left2=div('');
       left2.appendChild(el('div',{style:`font-size:12px;font-weight:700;color:${row2.color};letter-spacing:0.5px`},[row2.label]));
       left2.appendChild(el('div',{style:'font-size:10px;color:#64748b;margin-top:1px'},[row2.desc+' · límite: €'+row2.target.toFixed(0)]));
       top.appendChild(left2);
       wrap.appendChild(top);
-
-      // Números grandes: GASTADO prominente
       const nums=div('',[],`display:flex;align-items:baseline;gap:6px;margin-bottom:6px`);
       nums.appendChild(el('span',{style:`font-size:26px;font-weight:800;color:${ok?row2.color:'#ef4444'}`},['€'+row2.real.toFixed(0)]));
       nums.appendChild(el('span',{style:'font-size:13px;color:#64748b'},['gastado']));
       wrap.appendChild(nums);
-
-      // Barra
       const bgBar=div('',[],'height:8px;border-radius:99px;background:#1e293b;overflow:hidden');
       bgBar.appendChild(div('',[],'height:100%;border-radius:99px;transition:width 0.5s;background:'+(ok?row2.color:'#ef4444')+';width:'+Math.min(100,row2.pct)+'%'));
       wrap.appendChild(bgBar);
-
-      // Estado
       const st=div('',[],`display:flex;justify-content:space-between;margin-top:4px`);
       if(!ok){
         st.appendChild(el('span',{style:'font-size:11px;color:#ef4444'},['⚠ Excediste el límite en €'+(row2.real-row2.target).toFixed(0)]));
-      } else if(row2.label.includes('Ahorro')){
-        st.appendChild(el('span',{style:'font-size:11px;color:#22c55e'},['✓ Ahorro disponible este mes']));
-        st.appendChild(el('span',{style:'font-size:11px;font-weight:700;color:#22c55e'},['€'+row2.real.toFixed(0)+' / €'+row2.target.toFixed(0)]));
       } else {
         st.appendChild(el('span',{style:'font-size:11px;color:#64748b'},['Te quedan €'+resto.toFixed(0)+' disponibles']));
         st.appendChild(el('span',{style:'font-size:11px;color:#64748b'},[Math.round(row2.pct)+'% usado']));
@@ -1237,6 +1225,28 @@ function renderFinanzas() {
       wrap.appendChild(st);
       reglaCard.appendChild(wrap);
     });
+
+    // ── Ahorro: separado y claro ──
+    const disponible = Math.max(0, base - totalFijos - totalVar);
+    const ahorroOk   = disponible >= aho20;
+    const aWrap=div('',[],`margin-bottom:8px`);
+    aWrap.appendChild(el('div',{style:'font-size:12px;font-weight:700;color:#22c55e;letter-spacing:0.5px;margin-bottom:2px'},['20% Ahorro']));
+    aWrap.appendChild(el('div',{style:'font-size:10px;color:#64748b;margin-bottom:8px'},['Meta: €'+aho20.toFixed(0)+' · Disponible para ahorrar: €'+disponible.toFixed(0)]));
+    const aNums=div('',[],`display:flex;align-items:baseline;gap:6px;margin-bottom:6px`);
+    aNums.appendChild(el('span',{style:`font-size:26px;font-weight:800;color:${ahorroOk?'#22c55e':'#ef4444'}`},['€'+disponible.toFixed(0)]));
+    aNums.appendChild(el('span',{style:'font-size:13px;color:#64748b'},['disponible para ahorrar']));
+    aWrap.appendChild(aNums);
+    const aBg=div('',[],'height:8px;border-radius:99px;background:#1e293b;overflow:hidden');
+    aBg.appendChild(div('',[],'height:100%;border-radius:99px;background:'+(ahorroOk?'#22c55e':'#f59e0b')+';width:'+Math.min(100,Math.round(disponible/aho20*100))+'%;transition:width 0.5s'));
+    aWrap.appendChild(aBg);
+    const aSt=div('',[],`margin-top:4px`);
+    if(ahorroOk){
+      aSt.appendChild(el('span',{style:'font-size:11px;color:#22c55e'},['✓ Superás la meta de ahorro del mes']));
+    } else {
+      aSt.appendChild(el('span',{style:'font-size:11px;color:#f59e0b'},['Faltan €'+(aho20-disponible).toFixed(0)+' para llegar a la meta']));
+    }
+    aWrap.appendChild(aSt);
+    reglaCard.appendChild(aWrap);
   } else {
     reglaCard.appendChild(el('div',{style:'font-size:13px;color:#64748b;text-align:center;padding:8px 0'},['Cargá tus ingresos del mes arriba, o ingresá un monto base aquí']));
   }
