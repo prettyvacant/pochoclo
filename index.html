@@ -8,6 +8,26 @@
 <meta name="apple-mobile-web-app-title" content="Gaby">
 <meta name="theme-color" content="#0f172a">
 <title>Gaby App</title>
+<!-- v2025-05-24-001 -->
+<link rel="manifest" href="manifest.json">
+<script>
+if('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').then(function(reg) {
+    reg.addEventListener('updatefound', function() {
+      var newSW = reg.installing;
+      newSW.addEventListener('statechange', function() {
+        if(newSW.state === 'installed' && navigator.serviceWorker.controller) {
+          // New version available — reload automatically
+          navigator.serviceWorker.addEventListener('controllerchange', function() {
+            window.location.reload();
+          });
+          newSW.postMessage({type:'SKIP_WAITING'});
+        }
+      });
+    });
+  });
+}
+</script>
 <!-- v1.8 -->
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
@@ -576,7 +596,7 @@ const TAB_SECTIONS = {
   'Personal':['notas']
 };
 
-const EMOJIS_PERFIL = ['👤','🌟','✨','🎬','📸','🎭','🌸','🦋','🌿','🐱','🦊','🌙','☀️','🍀','🎸','🎨','📚','🧠','💫','🌺','🦄','🐝','🌊','🏔️','🎯'];
+const EMOJIS_PERFIL = ['🌟','✨','🎬','📸','🎭','🌸','🦋','🌿','🐱','🦊','🌙','☀️','🍀','🎸','🎨','📚','🧠','💫','🌺','🦄','🐝','🌊','🏔️','🎯','🪷','🌈','🔮','🎪','🎠','🎡','🌻','🍉','🦋','🎀','💎','🔥','⚡','🌴','🦩','🐉','🎭','🎪','🌹','🍄','🎶','🎵','🏄','🧩','🪐'];
 const TEMAS_PICKER = [
   {id:'slate',color:'#0f172a',label:'Oscuro'},
   {id:'rose',color:'#be123c',label:'Rosa'},
@@ -654,6 +674,7 @@ function renderOnboarding() {
     // Rebuild app
     document.body.innerHTML='<div id="toast" class="toast"></div><div class="app-shell"><nav class="sidebar" id="sidebar"></nav><div class="main-content"><div class="mobile-header"><div style="max-width:540px;margin:0 auto"><div class="header-title">SISTEMA PERSONAL</div><div class="header-name" id="mobile-username"></div><div class="tabs" id="tabs1"></div><div class="tabs2" id="tabs2"></div></div></div><div class="content" id="content"></div></div></div>';
     applyTheme();
+    applyAppIcon();
     render();
     renderThemePicker();
     setTimeout(sbLoadAndMerge, 1000);
@@ -2066,8 +2087,56 @@ async function sbLoadAndMerge() {
   if(ind) { ind.textContent='☁️ Listo'; ind.style.color='#15803d'; setTimeout(function(){ if(ind){ ind.textContent='☁️'; ind.style.color='#94a3b8'; } },2000); }
 }
 
+
+// ── Genera ícono dinámico desde el emoji del perfil ──
+function generateIcon(emoji, bgColor) {
+  try {
+    const size = 512;
+    const canvas = document.createElement('canvas');
+    canvas.width = size; canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    // Background rounded rect
+    const r = size * 0.22;
+    ctx.beginPath();
+    ctx.moveTo(r, 0);
+    ctx.lineTo(size-r, 0);
+    ctx.quadraticCurveTo(size, 0, size, r);
+    ctx.lineTo(size, size-r);
+    ctx.quadraticCurveTo(size, size, size-r, size);
+    ctx.lineTo(r, size);
+    ctx.quadraticCurveTo(0, size, 0, size-r);
+    ctx.lineTo(0, r);
+    ctx.quadraticCurveTo(0, 0, r, 0);
+    ctx.closePath();
+    ctx.fillStyle = bgColor || '#7c5cfc';
+    ctx.fill();
+    // Emoji
+    ctx.font = (size * 0.55) + 'px serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(emoji || '✨', size/2, size/2 + size*0.04);
+    return canvas.toDataURL('image/png');
+  } catch(e) { return null; }
+}
+
+function applyAppIcon() {
+  const emoji = (state.perfil && state.perfil.emoji) || '✨';
+  const bg = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#7c5cfc';
+  const iconUrl = generateIcon(emoji, bg);
+  if(!iconUrl) return;
+  // Apple touch icon
+  let link = document.querySelector("link[rel='apple-touch-icon']");
+  if(!link) { link = document.createElement('link'); link.rel='apple-touch-icon'; document.head.appendChild(link); }
+  link.href = iconUrl;
+  // Favicon
+  let fav = document.querySelector("link[rel='icon']");
+  if(!fav) { fav = document.createElement('link'); fav.rel='icon'; document.head.appendChild(fav); }
+  fav.href = iconUrl;
+}
+
 // Start
 applyTheme();
+applyAppIcon();
 if(!state.perfil) {
   renderOnboarding();
 } else {
