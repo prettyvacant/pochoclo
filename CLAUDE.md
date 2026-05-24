@@ -9,7 +9,7 @@ This file helps Claude Code and Claude understand this project.
 **Tutuca** is a personal life organizer built as a single-file Progressive Web App (PWA).  
 It was created in Spanish by an Argentine woman from Florencio Varela — made with love in Berlin.
 
-Live app: `https://prettyvacant.github.io/pochoclo`
+Live app: `https://prettyvacant.github.io/tutuca`
 
 ---
 
