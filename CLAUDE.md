@@ -1,4 +1,4 @@
-# CLAUDE.md — pochoclo
+# CLAUDE.md — Tutuca
 
 This file helps Claude Code and Claude understand this project.
 
@@ -6,7 +6,7 @@ This file helps Claude Code and Claude understand this project.
 
 ## What is this project?
 
-**pochoclo** is a personal life organizer built as a single-file Progressive Web App (PWA).  
+**Tutuca** is a personal life organizer built as a single-file Progressive Web App (PWA).  
 It was created in Spanish by an Argentine woman from Florencio Varela — made with love in Berlin.
 
 Live app: `https://prettyvacant.github.io/pochoclo`
@@ -31,7 +31,7 @@ There is no `package.json`, no bundler, no transpiler.
 ## File structure
 
 ```
-pochoclo/
+tutuca/
 ├── index.html      ← The entire app (HTML + CSS + JS)
 ├── sw.js           ← Service Worker for offline + auto-updates
 ├── manifest.json   ← PWA manifest
@@ -154,4 +154,4 @@ This is intentional — *100% espíritu varelense*.
 4. The Service Worker handles auto-updates for installed PWA users
 
 > ⚠️ After every significant change, update the cache version string in `sw.js`:
-> `const CACHE = 'pochoclo-v{date}-{version}';`
+> `const CACHE = 'tutuca-v{date}-{version}';`

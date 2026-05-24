@@ -1,4 +1,4 @@
-# 🌟 Pochoclo
+# 🌟 Tutuca
 
 **A personal daily life organizer — simple, warm, and built to last.**  
 Track your routines, finances, weekly meals, projects and more. Designed to be used in just a few minutes a day, from any device.
@@ -9,7 +9,7 @@ Track your routines, finances, weekly meals, projects and more. Designed to be u
 
 ## What is this?
 
-pochoclo is a Progressive Web App (PWA) — no installation needed, runs in the browser, and can be added to your phone's home screen like a native app.
+Tutuca is a Progressive Web App (PWA) — no installation needed, runs in the browser, and can be added to your phone's home screen like a native app.
 
 Data is saved locally on your device and synced to the cloud via Supabase, so everything stays up to date across all your devices.
 

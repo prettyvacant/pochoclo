@@ -2256,7 +2256,7 @@ function scheduleSbSave() {
   if(!state.perfil) return;
   clearTimeout(sbSaveTimer);
   sbSaveTimer = setTimeout(async function() {
-    const userId = (state.perfil.email || state.perfil.nombre) + '_pochoclo';
+    const userId = (state.perfil.email || state.perfil.nombre) + '_tutuca';
     const snapshot = {
       grupos:state.grupos, checks:state.checks, semana:state.semana,
       meals:state.meals, eventos:state.eventos, movs:state.movs,
@@ -2279,7 +2279,7 @@ function scheduleSbSave() {
 
 async function sbLoadAndMerge() {
   if(!state.perfil) return;
-  const userId = (state.perfil.email || state.perfil.nombre) + '_pochoclo';
+  const userId = (state.perfil.email || state.perfil.nombre) + '_tutuca';
   const ind = document.getElementById('sync-indicator');
   if(ind) { ind.textContent='☁️ Sync...'; ind.style.color='#1d4ed8'; }
   const remote = await sbLoad(userId);

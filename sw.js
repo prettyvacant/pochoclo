@@ -1,5 +1,5 @@
 // Service Worker — auto-update on new version
-const CACHE = 'pochoclo-v2026-05-24-002';
+const CACHE = 'tutuca-v2026-05-24-001';
 
 self.addEventListener('install', function(e) {
   e.waitUntil(
