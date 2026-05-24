@@ -58,18 +58,20 @@ if('serviceWorker' in navigator) {
 }
 @media(prefers-color-scheme:dark){
   :root{
-    --bg:#14131c;
-    --surface:#1e1d28;
-    --border:#2e2c3e;
-    --text:#e4e0dc;
-    --muted:#8a8496;
-    --faint:#5a5468;
+    --bg:#18172a;
+    --surface:#242237;
+    --border:#3c3a58;
+    --text:#eae6e2;
+    --muted:#9b94a8;
+    --faint:#7a7290;
     --green-light:#0d2018;
     --red-light:#2a0e0a;
     --amber-light:#241a06;
     --blue-light:#0a1428;
   }
 }
+body.dark{--bg:#18172a;--surface:#242237;--border:#3c3a58;--text:#eae6e2;--muted:#9b94a8;--faint:#7a7290;--green-light:#0d2018;--red-light:#2a0e0a;--amber-light:#241a06;--blue-light:#0a1428}
+body.light{--bg:#faf9f7!important;--surface:#ffffff!important;--border:#ede9e3!important;--text:#1a1814!important;--muted:#6b6560!important;--faint:#b0a99f!important;--green-light:#f0fdf4!important;--red-light:#fef2f2!important;--amber-light:#fffbeb!important;--blue-light:#eff6ff!important}
 
 /* ── SPLASH ── */
 #splash{
@@ -603,6 +605,8 @@ let state = {
   showNewProj: false,
   pronombre: S.get('pronombre')||'elle',
   idiomaAprender: S.get('idiomaAprender')||'en',
+  idiomaUsar: S.get('idiomaUsar')||'es',
+  modoOscuro: S.get('modoOscuro')||'auto',
 };
 
 function save() {
@@ -628,6 +632,8 @@ function save() {
   S.set('proyectos',state.proyectos);
   S.set('pronombre',state.pronombre);
   S.set('idiomaAprender',state.idiomaAprender);
+  S.set('idiomaUsar',state.idiomaUsar);
+  S.set('modoOscuro',state.modoOscuro);
 }
 
 function render() {
@@ -667,6 +673,38 @@ function bienvenide(pronombre) {
 }
 
 const PALABRAS_DIA = {
+  es: [
+    {p:'madrugada',t:'las horas antes del amanecer',e:'La madrugada guarda secretos.'},
+    {p:'añoranza',t:'nostalgia suave y profunda',e:'Siento añoranza de ese lugar.'},
+    {p:'entrañable',t:'que se quiere con el alma',e:'Es un lugar muy entrañable.'},
+    {p:'sosiego',t:'calma interior',e:'Encontré mi sosiego.'},
+    {p:'efímero',t:'que dura poco y vale mucho',e:'Los momentos efímeros son preciosos.'},
+    {p:'querencia',t:'el lugar donde una se siente en casa',e:'Este lugar es mi querencia.'},
+    {p:'asombro',t:'capacidad de maravillarse',e:'El asombro es un regalo.'},
+    {p:'desvelo',t:'esfuerzo hecho con amor',e:'Su desvelo era por amor.'},
+    {p:'alborada',t:'la primera luz del día',e:'La alborada pintó el cielo.'},
+    {p:'ternura',t:'suavidad del corazón',e:'Con ternura se hace todo.'},
+    {p:'plenitud',t:'sentirse completa',e:'Vivir en plenitud.'},
+    {p:'brisa',t:'viento suave',e:'Una brisa de verano.'},
+    {p:'valentía',t:'fuerza para ser une misme',e:'La valentía de existir.'},
+    {p:'florecer',t:'crecer desde adentro',e:'Es tiempo de florecer.'},
+    {p:'amanecer',t:'cada día comienza de nuevo',e:'Cada amanecer es nuevo.'},
+    {p:'cariño',t:'afecto genuino',e:'Con mucho cariño.'},
+    {p:'maravilla',t:'lo que sorprende el corazón',e:'La maravilla de lo cotidiano.'},
+    {p:'hogar',t:'donde una pertenece',e:'Sentirse en hogar.'},
+    {p:'orgullo',t:'honrar lo que une es',e:'Con orgullo de ser.'},
+    {p:'raíz',t:'de dónde venimos',e:'Mis raíces me sostienen.'},
+    {p:'vuelo',t:'hacia dónde vamos',e:'Dejarse llevar en vuelo.'},
+    {p:'sueño',t:'lo que imaginamos posible',e:'Mis sueños son míos.'},
+    {p:'luz',t:'lo que nos guía',e:'Sos mi luz.'},
+    {p:'fuerza',t:'lo que nos sostiene',e:'Encontrá tu fuerza.'},
+    {p:'camino',t:'lo que recorremos',e:'El camino se hace al andar.'},
+    {p:'abrazo',t:'el lenguaje del cuerpo',e:'Un abrazo lo cura todo.'},
+    {p:'calma',t:'el descanso del ruido',e:'Respirá, encontrá la calma.'},
+    {p:'gratitud',t:'reconocer lo que se tiene',e:'Con gratitud infinita.'},
+    {p:'libertad',t:'el derecho de ser',e:'Vivir en libertad.'},
+    {p:'sangre',t:'lo que nos une con nuestros orígenes',e:'La sangre llama.'},
+  ],
   en: [
     {p:'cozy',t:'acogedor/a',e:'The café was so cozy.'},
     {p:'resilient',t:'resiliente',e:'You are so resilient.'},
@@ -744,14 +782,49 @@ function renderOnboarding() {
   const wrap = el('div',{style:'min-height:100vh;background:#0f172a;display:flex;align-items:center;justify-content:center;padding:24px'});
   const box = el('div',{style:'background:#1e293b;border-radius:20px;padding:32px 24px;max-width:400px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.5)'});
 
+  // Textos por idioma
+  const OB_TEXTOS={
+    es:{bienvenide:'Bienvenide',sub:'Personalizá tu app antes de empezar',nota1:'Esta app sigue valores feministas y queer.',nota2:'Hecha con amor en Berlín con 100% de espíritu varelense 🇦🇷',labelIdioma:'Idioma de la app',labelPronombre:'¿Cómo preferís que te llamen?',labelNombre:'Tu nombre',labelAño:'Año de tu sistema',labelEmail:'Tu email (para sincronizar)',labelEmoji:'Tu ícono',labelColor:'Color de la app',btnEmpezar:'Empezar →'},
+    en:{bienvenide:'Welcome',sub:'Set up your app before you start',nota1:'This app follows feminist and queer values.',nota2:'Made with love in Berlin with 100% Florencio Varela spirit 🇦🇷',labelIdioma:'App language',labelPronombre:'What pronouns do you prefer?',labelNombre:'Your name',labelAño:'System year',labelEmail:'Your email (for sync)',labelEmoji:'Your icon',labelColor:'App color',btnEmpezar:'Start →'},
+    de:{bienvenide:'Willkommen',sub:'Richte deine App ein, bevor du beginnst',nota1:'Diese App folgt feministischen und queeren Werten.',nota2:'Mit Liebe in Berlin gemacht — 100% Florencio Varela Geist 🇦🇷',labelIdioma:'App-Sprache',labelPronombre:'Welche Pronomen bevorzugst du?',labelNombre:'Dein Name',labelAño:'Systemjahr',labelEmail:'Deine E-Mail (für Sync)',labelEmoji:'Dein Symbol',labelColor:'App-Farbe',btnEmpezar:'Loslegen →'},
+  };
+  let selIdiomaUsar='es';
+
+  // Helper to update translatable texts
+  function actualizarTextos(){
+    const txt=OB_TEXTOS[selIdiomaUsar]||OB_TEXTOS.es;
+    const ids=['ob-bienvenide','ob-sub','ob-nota1','ob-nota2','ob-lbl-idioma','ob-lbl-pronombre','ob-lbl-nombre','ob-lbl-año','ob-lbl-email','ob-lbl-emoji','ob-lbl-color','ob-submit'];
+    const vals=[txt.bienvenide,txt.sub,txt.nota1,txt.nota2,txt.labelIdioma,txt.labelPronombre,txt.labelNombre,txt.labelAño,txt.labelEmail,txt.labelEmoji,txt.labelColor,txt.btnEmpezar];
+    ids.forEach(function(id,i){ const el2=document.getElementById(id); if(el2) el2.textContent=vals[i]; });
+  }
+
   box.appendChild(el('div',{style:'font-size:36px;text-align:center;margin-bottom:8px'},['✨']));
-  box.appendChild(el('div',{style:'font-size:22px;font-weight:800;color:#f8fafc;text-align:center;margin-bottom:4px'},['Bienvenide']));
-  box.appendChild(el('div',{style:'font-size:13px;color:#64748b;text-align:center;margin-bottom:8px'},['Personalizá tu app antes de empezar']));
-  box.appendChild(el('div',{style:'font-size:11px;color:#475569;text-align:center;margin-bottom:4px;font-style:italic'},['Esta app sigue valores feministas y queer.']));
-  box.appendChild(el('div',{style:'font-size:11px;color:#475569;text-align:center;margin-bottom:24px;font-style:italic'},['Handmade in Berlin with 100% Florencio Varela spirit 🇦🇷']));
+  box.appendChild(el('div',{id:'ob-bienvenide',style:'font-size:22px;font-weight:800;color:#f8fafc;text-align:center;margin-bottom:4px'},['Bienvenide']));
+  box.appendChild(el('div',{id:'ob-sub',style:'font-size:13px;color:#64748b;text-align:center;margin-bottom:8px'},['Personalizá tu app antes de empezar']));
+  box.appendChild(el('div',{id:'ob-nota1',style:'font-size:11px;color:#7c6fa0;text-align:center;margin-bottom:4px;font-style:italic'},['Esta app sigue valores feministas y queer.']));
+  box.appendChild(el('div',{id:'ob-nota2',style:'font-size:11px;color:#7c6fa0;text-align:center;margin-bottom:20px;font-style:italic'},['Hecha con amor en Berlín con 100% de espíritu varelense 🇦🇷']));
+
+  // Idioma de la app
+  box.appendChild(el('div',{id:'ob-lbl-idioma',style:'font-size:12px;font-weight:600;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px'},['Idioma de la app']));
+  const idiomasUsar=[{id:'es',label:'🇦🇷 Español'},{id:'en',label:'🇬🇧 English'},{id:'de',label:'🇩🇪 Deutsch'}];
+  const idiomaUsarRow=el('div',{style:'display:flex;gap:8px;margin-bottom:20px'});
+  idiomasUsar.forEach(function(idu){
+    const iub=el('button',{style:`flex:1;border-radius:10px;padding:10px 4px;font-size:12px;font-weight:600;border:2px solid ${idu.id===selIdiomaUsar?'#6d28d9':'#334155'};background:${idu.id===selIdiomaUsar?'#6d28d9':'transparent'};color:${idu.id===selIdiomaUsar?'#fff':'#94a3b8'};cursor:pointer;transition:all 0.12s;font-family:inherit`},[idu.label]);
+    iub.addEventListener('click',function(){
+      selIdiomaUsar=idu.id;
+      idiomaUsarRow.querySelectorAll('button').forEach(function(b2,i){
+        b2.style.borderColor=idiomasUsar[i].id===selIdiomaUsar?'#6d28d9':'#334155';
+        b2.style.background=idiomasUsar[i].id===selIdiomaUsar?'#6d28d9':'transparent';
+        b2.style.color=idiomasUsar[i].id===selIdiomaUsar?'#fff':'#94a3b8';
+      });
+      actualizarTextos();
+    });
+    idiomaUsarRow.appendChild(iub);
+  });
+  box.appendChild(idiomaUsarRow);
 
   // Pronombre
-  box.appendChild(el('div',{style:'font-size:12px;font-weight:600;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px'},['¿Cómo preferís que te llamemos?']));
+  box.appendChild(el('div',{id:'ob-lbl-pronombre',style:'font-size:12px;font-weight:600;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px'},['¿Cómo preferís que te llamen?']));
   let selPronombre='elle';
   const pronombres=[{id:'ella',label:'ella 💜'},{id:'él',label:'él 💙'},{id:'elle',label:'elle 🤍'}];
   const pronRow=el('div',{style:'display:flex;gap:8px;margin-bottom:16px'});
@@ -770,41 +843,22 @@ function renderOnboarding() {
   box.appendChild(pronRow);
 
   // Nombre
-  box.appendChild(el('div',{style:'font-size:12px;font-weight:600;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px'},['Tu nombre']));
+  box.appendChild(el('div',{id:'ob-lbl-nombre',style:'font-size:12px;font-weight:600;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px'},['Tu nombre']));
   const nameInp = el('input',{id:'ob-name',placeholder:'Ej: Gaby, María, Juan...',style:'width:100%;border:1px solid #334155;border-radius:10px;padding:12px 14px;background:#0f172a;color:#f8fafc;outline:none;font-size:15px;margin-bottom:16px;box-sizing:border-box;font-family:inherit'});
   box.appendChild(nameInp);
 
   // Año
-  box.appendChild(el('div',{style:'font-size:12px;font-weight:600;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px'},['Año de tu sistema']));
+  box.appendChild(el('div',{id:'ob-lbl-año',style:'font-size:12px;font-weight:600;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px'},['Año de tu sistema']));
   const yearInp = el('input',{id:'ob-year',value:String(new Date().getFullYear()),style:'width:100%;border:1px solid #334155;border-radius:10px;padding:12px 14px;background:#0f172a;color:#f8fafc;outline:none;font-size:15px;margin-bottom:16px;box-sizing:border-box;font-family:inherit'});
   box.appendChild(yearInp);
 
-  // Email (para sync entre dispositivos)
-  box.appendChild(el('div',{style:'font-size:12px;font-weight:600;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px'},['Tu email (para sincronizar entre dispositivos)']));
+  // Email
+  box.appendChild(el('div',{id:'ob-lbl-email',style:'font-size:12px;font-weight:600;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px'},['Tu email (para sincronizar)']));
   const emailInp = el('input',{id:'ob-email',type:'email',placeholder:'tumail@ejemplo.com',style:'width:100%;border:1px solid #334155;border-radius:10px;padding:12px 14px;background:#0f172a;color:#f8fafc;outline:none;font-size:15px;margin-bottom:16px;box-sizing:border-box;font-family:inherit'});
   box.appendChild(emailInp);
 
-  // Idioma a aprender
-  box.appendChild(el('div',{style:'font-size:12px;font-weight:600;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px'},['Quiero aprender']));
-  let selIdioma='en';
-  const idiomas=[{id:'en',label:'🇬🇧 Inglés'},{id:'de',label:'🇩🇪 Alemán'},{id:'none',label:'— Ninguno'}];
-  const idiomaRow=el('div',{style:'display:flex;gap:8px;margin-bottom:16px'});
-  idiomas.forEach(function(id){
-    const ib=el('button',{style:`flex:1;border-radius:10px;padding:10px 4px;font-size:12px;font-weight:600;border:2px solid ${id.id===selIdioma?'#6d28d9':'#334155'};background:${id.id===selIdioma?'#6d28d9':'transparent'};color:${id.id===selIdioma?'#fff':'#94a3b8'};cursor:pointer;transition:all 0.12s;font-family:inherit`},[id.label]);
-    ib.addEventListener('click',function(){
-      selIdioma=id.id;
-      idiomaRow.querySelectorAll('button').forEach(function(b2,i){
-        b2.style.borderColor=idiomas[i].id===selIdioma?'#6d28d9':'#334155';
-        b2.style.background=idiomas[i].id===selIdioma?'#6d28d9':'transparent';
-        b2.style.color=idiomas[i].id===selIdioma?'#fff':'#94a3b8';
-      });
-    });
-    idiomaRow.appendChild(ib);
-  });
-  box.appendChild(idiomaRow);
-
   // Emoji picker
-  box.appendChild(el('div',{style:'font-size:12px;font-weight:600;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px'},['Tu ícono']));
+  box.appendChild(el('div',{id:'ob-lbl-emoji',style:'font-size:12px;font-weight:600;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px'},['Tu ícono']));
   let selectedEmoji = '🌟';
   const emojiGrid = el('div',{id:'emoji-grid',style:'display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px'});
   EMOJIS_PERFIL.forEach(e=>{
@@ -822,7 +876,7 @@ function renderOnboarding() {
   box.appendChild(emojiGrid);
 
   // Theme picker
-  box.appendChild(el('div',{style:'font-size:12px;font-weight:600;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px'},['Color de la app']));
+  box.appendChild(el('div',{id:'ob-lbl-color',style:'font-size:12px;font-weight:600;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px'},['Color de la app']));
   let selectedTheme = 'slate';
   const themeRow = el('div',{id:'theme-row',style:'display:flex;gap:8px;margin-bottom:24px'});
   TEMAS_PICKER.forEach(t=>{
@@ -837,14 +891,14 @@ function renderOnboarding() {
   box.appendChild(themeRow);
 
   // Submit
-  const submitBtn=el('button',{style:'width:100%;background:#6d28d9;color:#fff;border:none;border-radius:12px;padding:14px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit'},['Empezar →']);
+  const submitBtn=el('button',{id:'ob-submit',style:'width:100%;background:#6d28d9;color:#fff;border:none;border-radius:12px;padding:14px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit'},['Empezar →']);
   submitBtn.addEventListener('click',()=>{
     const nombre=document.getElementById('ob-name')&&document.getElementById('ob-name').value.trim()||'Usuario';
     const año=document.getElementById('ob-year')&&document.getElementById('ob-year').value.trim()||String(new Date().getFullYear());
     const email=document.getElementById('ob-email')&&document.getElementById('ob-email').value.trim()||'';
     state.perfil={nombre,emoji:selectedEmoji,año,email};
     state.pronombre=selPronombre;
-    state.idiomaAprender=selIdioma;
+    state.idiomaUsar=selIdiomaUsar;
     state.theme=selectedTheme;
     save();
     // Rebuild app
@@ -910,6 +964,24 @@ function renderPerfilEditor() {
   });
   box.appendChild(themeRow);
 
+  // Modo oscuro
+  box.appendChild(el('div',{style:'font-size:12px;font-weight:600;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px'},['Modo visual']));
+  const modoRow=el('div',{id:'pe-modo-row',style:'display:flex;gap:8px;margin-bottom:20px'});
+  const modos=[{id:'auto',label:'Auto 🌗'},{id:'light',label:'Claro ☀️'},{id:'dark',label:'Oscuro 🌙'}];
+  modos.forEach(function(m){
+    const mb=el('button',{style:`flex:1;border-radius:10px;padding:10px 4px;font-size:12px;font-weight:600;border:1.5px solid ${state.modoOscuro===m.id?'var(--accent)':'var(--border)'};background:${state.modoOscuro===m.id?'var(--accent-light)':'var(--bg)'};color:${state.modoOscuro===m.id?'var(--accent)':'var(--muted)'};cursor:pointer;font-family:inherit`},[m.label]);
+    mb.addEventListener('click',function(){
+      state.modoOscuro=m.id; save(); applyTheme();
+      document.querySelectorAll('#pe-modo-row button').forEach(function(b2,i){
+        b2.style.borderColor=modos[i].id===state.modoOscuro?'var(--accent)':'var(--border)';
+        b2.style.background=modos[i].id===state.modoOscuro?'var(--accent-light)':'var(--bg)';
+        b2.style.color=modos[i].id===state.modoOscuro?'var(--accent)':'var(--muted)';
+      });
+    });
+    modoRow.appendChild(mb);
+  });
+  box.appendChild(modoRow);
+
   // Save + reset
   box.appendChild(el('button',{class:'btn-primary',style:'margin-bottom:10px',onclick:()=>{
     state.perfil={nombre:$('pe-name').value.trim()||'Usuario',emoji:selEmoji,año:$('pe-year').value.trim()};
@@ -930,7 +1002,10 @@ function renderPerfilEditor() {
 
 function applyTheme() {
   const themes=['slate','rose','violet','teal','amber'];
-  document.body.className=themes.includes(state.theme)?'theme-'+state.theme:'theme-slate';
+  let cls=themes.includes(state.theme)?'theme-'+state.theme:'theme-slate';
+  if(state.modoOscuro==='dark') cls+=' dark';
+  else if(state.modoOscuro==='light') cls+=' light';
+  document.body.className=cls;
 }
 
 function renderThemePicker() {
@@ -1037,77 +1112,6 @@ function renderRutinas() {
   const c=$('content');
   c.innerHTML='';
 
-  // ── Fecha + Reloj horizontal ──
-  const hoyDate=new Date();
-  const diasSem=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
-  const mesesN=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
-
-  const fechaDiv=div('',[],`display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding:20px;background:var(--accent);border-radius:18px;color:#fff`);
-
-  // Izquierda: fecha
-  const fechaLeft=div('');
-  fechaLeft.appendChild(el('div',{style:'font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;opacity:0.7;margin-bottom:4px'},[diasSem[hoyDate.getDay()===0?6:hoyDate.getDay()-1]]));
-  const fechaNumRow=div('',[],`display:flex;align-items:baseline;gap:8px`);
-  fechaNumRow.appendChild(el('span',{style:'font-size:52px;font-weight:800;line-height:1'},[String(hoyDate.getDate())]));
-  const fechaMesAño=div('');
-  fechaMesAño.appendChild(el('div',{style:'font-size:16px;font-weight:600;text-transform:capitalize'},[mesesN[hoyDate.getMonth()]]));
-  fechaMesAño.appendChild(el('div',{style:'font-size:13px;opacity:0.6'},[String(hoyDate.getFullYear())]));
-  fechaNumRow.appendChild(fechaMesAño);
-  fechaLeft.appendChild(fechaNumRow);
-  fechaDiv.appendChild(fechaLeft);
-
-  // Derecha: reloj en vivo
-  const relojDiv=div('',[],`text-align:right`);
-  function getHora(){ const n=new Date(); return String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0'); }
-  const relojEl=el('div',{id:'reloj-live',style:'font-size:38px;font-weight:300;letter-spacing:2px;font-variant-numeric:tabular-nums'},[getHora()]);
-  relojDiv.appendChild(relojEl);
-  relojDiv.appendChild(el('div',{style:'font-size:11px;opacity:0.5;text-align:right;margin-top:2px'},['Berlin']));
-  fechaDiv.appendChild(relojDiv);
-  c.appendChild(fechaDiv);
-
-  // Tick del reloj cada 10s
-  if(window._relojInterval) clearInterval(window._relojInterval);
-  window._relojInterval = setInterval(function(){
-    const el2=document.getElementById('reloj-live');
-    if(el2) el2.textContent=getHora(); else clearInterval(window._relojInterval);
-  }, 10000);
-
-  // ── Tareas de hoy ──
-  const tareasKey=getTodayKey();
-  if(!state.tareas[tareasKey]) state.tareas[tareasKey]=[];
-  const tareasHoy=state.tareas[tareasKey];
-  const tCard=div('card',[],`margin-bottom:16px`);
-  const tHdr=div('',[],`display:flex;justify-content:space-between;align-items:center;margin-bottom:10px`);
-  tHdr.appendChild(el('div',{style:'font-size:15px;font-weight:700'},['Tareas de hoy']));
-  if(tareasHoy.length){
-    const done2=tareasHoy.filter(function(t){return t.done;}).length;
-    tHdr.appendChild(el('div',{style:'font-size:12px;color:#94a3b8'},[done2+'/'+tareasHoy.length]));
-  }
-  tCard.appendChild(tHdr);
-  const tRow=div('',[],`display:flex;gap:8px;margin-bottom:${tareasHoy.length?'8px':'0'}`);
-  const tInp=el('input',{id:'tarea-hoy-inp',placeholder:'Agregar tarea para hoy...',style:'flex:1;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;font-size:14px;background:#f8fafc;color:#0f172a;outline:none;font-family:inherit'});
-  function addTareaHoy(){
-    var inp=document.getElementById('tarea-hoy-inp');
-    if(!inp||!inp.value.trim()) return;
-    if(!state.tareas[tareasKey]) state.tareas[tareasKey]=[];
-    state.tareas[tareasKey].push({id:uid(),texto:inp.value.trim(),done:false});
-    save(); render();
-  }
-  tInp.addEventListener('keydown',function(e){ if(e.key==='Enter') addTareaHoy(); });
-  tRow.appendChild(tInp);
-  tRow.appendChild(btn('+','',addTareaHoy,'background:var(--accent);color:#fff;border:none;border-radius:10px;padding:10px 16px;font-size:16px;font-weight:700'));
-  tCard.appendChild(tRow);
-  tareasHoy.forEach(function(t,i){
-    var row=div('',[],`display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid #f1f5f9`);
-    var cb=div('',[t.done?'✓':''],`width:22px;height:22px;border-radius:6px;flex-shrink:0;background:${t.done?'#15803d':'transparent'};border:2px solid ${t.done?'#15803d':'#e2e8f0'};display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;cursor:pointer`);
-    cb.addEventListener('click',function(){ state.tareas[tareasKey][i].done=!state.tareas[tareasKey][i].done; if(state.tareas[tareasKey][i].done)vibrar(); save(); render(); });
-    var txt=el('span',{style:`flex:1;font-size:14px;color:${t.done?'#94a3b8':'#0f172a'};text-decoration:${t.done?'line-through':'none'}`},[t.texto]);
-    var del=btn('×','',function(){ state.tareas[tareasKey].splice(i,1); save(); render(); },'background:none;border:none;color:#cbd5e1;font-size:17px;padding:0 2px;cursor:pointer');
-    row.appendChild(cb); row.appendChild(txt); row.appendChild(del);
-    tCard.appendChild(row);
-  });
-  c.appendChild(tCard);
-
   // Stats
   const stats=div('',[],'display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px');
   [[doneHoy,'hechas hoy','#dcfce7','#15803d'],[racha,'días racha','#ede9fe','#6d28d9'],[total,'hábitos','#dbeafe','#1d4ed8']].forEach(([v,s,bg,color])=>{
@@ -1166,42 +1170,6 @@ function renderRutinas() {
 
   if(state.vistaRut==='hoy') {
 
-    // ── BIENESTAR ARRIBA ──
-    const hoy2=getTodayKey();
-    const hb=state.bienestar[hoy2]||{agua:0,sueno:0,animo:0};
-    const ANIMOS=['😔','😐','🙂','😊','🤩'];
-    const bSection=div('card',[],`margin-bottom:20px`);
-    bSection.appendChild(el('div',{style:'font-size:14px;font-weight:700;color:#1d4ed8;margin-bottom:14px'},['💧 Bienestar de hoy']));
-    // Agua
-    bSection.appendChild(el('div',{style:'font-size:12px;font-weight:600;color:#1d4ed8;margin-bottom:7px'},[`Agua — ${hb.agua}/8 vasos`]));
-    const aguaRow=div('',[],`display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px`);
-    for(let i=0;i<8;i++){
-      const ab=div('',[i<hb.agua?'💧':'·'],`width:36px;height:36px;border-radius:9px;border:2px solid ${i<hb.agua?'#1d4ed8':'#93c5fd'};background:${i<hb.agua?'#2563eb':'#dbeafe'};display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;user-select:none;-webkit-user-select:none`);
-      ab.addEventListener('click',()=>{const val=i<hb.agua?i:i+1;state.bienestar[hoy2]={...hb,agua:val};save();render();});
-      aguaRow.appendChild(ab);
-    }
-    bSection.appendChild(aguaRow);
-    // Sueño
-    bSection.appendChild(el('div',{style:'font-size:12px;font-weight:600;color:#6d28d9;margin-bottom:7px'},[`Sueño — ${hb.sueno||'—'}h`]));
-    const sRow=div('',[],`display:flex;gap:5px;margin-bottom:14px`);
-    [5,6,7,8,9,10].forEach(h=>{
-      const sb2=el('button',{style:`flex:1;border-radius:8px;font-size:12px;padding:9px 4px;border:1px solid ${hb.sueno===h?'#6d28d9':'#c4b5fd'};background:${hb.sueno===h?'#6d28d9':'#ede9fe'};color:${hb.sueno===h?'#fff':'#6d28d9'};font-weight:${hb.sueno===h?700:400};cursor:pointer`},[`${h}h`]);
-      sb2.addEventListener('click',()=>{state.bienestar[hoy2]={...hb,sueno:h};save();render();});
-      sRow.appendChild(sb2);
-    });
-    bSection.appendChild(sRow);
-    // Ánimo
-    bSection.appendChild(el('div',{style:'font-size:12px;font-weight:600;color:#a16207;margin-bottom:8px'},['Ánimo del día']));
-    const aRow=div('',[],`display:flex;gap:8px;justify-content:space-around;margin-bottom:6px`);
-    ANIMOS.forEach((a,i)=>{
-      const ae=el('div',{style:`font-size:28px;cursor:pointer;opacity:${hb.animo===i+1?1:0.3};transform:${hb.animo===i+1?'scale(1.2)':'scale(1)'};transition:all 0.15s;user-select:none;-webkit-user-select:none`},[a]);
-      ae.addEventListener('click',()=>{state.bienestar[hoy2]={...hb,animo:i+1};save();render();});
-      aRow.appendChild(ae);
-    });
-    bSection.appendChild(aRow);
-    if(hb.animo>0) bSection.appendChild(el('div',{style:'text-align:center;font-size:12px;color:#a16207;margin-top:4px'},[['Un día difícil','Día normal','Bien','Muy bien','Excelente'][hb.animo-1]]));
-    c.appendChild(bSection);
-
     state.grupos.forEach(g=>{
       if(!g.items.length) return;
       const hechos=g.items.filter(it=>state.checks[`${hoy}__${it.id}`]).length;
@@ -1216,12 +1184,12 @@ function renderRutinas() {
       g.items.forEach(item=>{
         const done=!!state.checks[`${hoy}__${item.id}`];
         if(state.editMode) {
-          const row=div('',[],`display:flex;align-items:center;gap:7px;padding:9px 12px;background:#fffbeb;border:1px solid #b4530955;border-radius:10px;margin-bottom:7px`);
-          const inp=el('input',{value:item.nombre,style:'flex:1;border:1px solid #e2e8f0;border-radius:9px;padding:7px 9px;font-size:13px;background:#fff;color:#0f172a;outline:none'});
+          const row=div('',[],`display:flex;align-items:center;gap:7px;padding:9px 12px;background:var(--amber-light);border:1px solid var(--border);border-radius:10px;margin-bottom:7px`);
+          const inp=el('input',{value:item.nombre,style:'flex:1;border:1.5px solid var(--border);border-radius:9px;padding:7px 9px;font-size:13px;background:var(--surface);color:var(--text);outline:none'});
           inp.addEventListener('input',e=>{state.grupos=state.grupos.map(g2=>g2.id!==g.id?g2:{...g2,items:g2.items.map(it=>it.id!==item.id?it:{...it,nombre:e.target.value})});save();});
-          const fsel=el('select',{style:'border:1px solid #e2e8f0;border-radius:9px;padding:7px;font-size:12px;background:#fff;color:#0f172a;outline:none'},FREC_OPTS.map(f=>{ const o=el('option',{value:f},[f]); if(f===item.frec) o.selected=true; return o; }));
+          const fsel=el('select',{style:'border:1.5px solid var(--border);border-radius:9px;padding:7px;font-size:12px;background:var(--surface);color:var(--text);outline:none'},FREC_OPTS.map(f=>{ const o=el('option',{value:f},[f]); if(f===item.frec) o.selected=true; return o; }));
           fsel.addEventListener('change',e=>{state.grupos=state.grupos.map(g2=>g2.id!==g.id?g2:{...g2,items:g2.items.map(it=>it.id!==item.id?it:{...it,frec:e.target.value})});save();});
-          const delBtn=btn('×','',()=>{state.grupos=state.grupos.map(g2=>g2.id!==g.id?g2:{...g2,items:g2.items.filter(it=>it.id!==item.id)});save();render();},'background:#fee2e2;color:#b91c1c;border:1px solid #fca5a544;border-radius:7px;padding:7px 10px;font-size:15px;font-weight:700');
+          const delBtn=btn('×','',()=>{state.grupos=state.grupos.map(g2=>g2.id!==g.id?g2:{...g2,items:g2.items.filter(it=>it.id!==item.id)});save();render();},'background:var(--red-light);color:#ef4444;border:1px solid #ef444444;border-radius:7px;padding:7px 10px;font-size:15px;font-weight:700');
           row.appendChild(inp); row.appendChild(fsel); row.appendChild(delBtn);
           section.appendChild(row);
         } else {
@@ -1236,20 +1204,18 @@ function renderRutinas() {
           section.appendChild(row);
         }
       });
-      // "+ agregar ítem" button per group (edit mode)
-      if(state.editMode) {
-        const addRow=div('',[],`display:flex;gap:8px;margin-top:4px`);
-        const addInp=el('input',{placeholder:`Nueva rutina en ${g.label}...`,style:`flex:1;border:1px solid #e2e8f0;border-radius:9px;padding:8px 10px;font-size:13px;background:#fff;color:#0f172a;outline:none;font-family:inherit`,id:`add-inp-${g.id}`});
-        const addBtn=btn('+','',()=>{
-          const inp=document.getElementById(`add-inp-${g.id}`);
-          if(!inp||!inp.value.trim()) return;
-          state.grupos=state.grupos.map(g2=>g2.id!==g.id?g2:{...g2,items:[...g2.items,{id:uid(),nombre:inp.value.trim(),frec:'Diario'}]});
-          save(); render();
-        },`background:var(--accent);color:#fff;border:none;border-radius:9px;padding:8px 14px;font-size:16px;font-weight:700`);
-        addRow.appendChild(addInp);
-        addRow.appendChild(addBtn);
-        section.appendChild(addRow);
-      }
+      const addRow=div('',[],`display:flex;gap:8px;margin-top:6px`);
+      const addInp=el('input',{placeholder:`+ Agregar a ${g.label}...`,style:`flex:1;border:1.5px solid var(--border);border-radius:12px;padding:10px 12px;font-size:13px;background:var(--bg);color:var(--text);outline:none;font-family:inherit`,id:`add-inp-${g.id}`});
+      const addBtn=btn('+','',function(){
+        var inp2=document.getElementById('add-inp-'+g.id);
+        if(!inp2||!inp2.value.trim()) return;
+        state.grupos=state.grupos.map(function(g2){return g2.id!==g.id?g2:{...g2,items:[...g2.items,{id:uid(),nombre:inp2.value.trim(),frec:'Diario'}]};});
+        save(); render();
+      },`background:var(--accent);color:#fff;border:none;border-radius:12px;padding:10px 16px;font-size:16px;font-weight:700`);
+      addInp.addEventListener('keydown',function(e){ if(e.key==='Enter') addBtn.click(); });
+      addRow.appendChild(addInp);
+      addRow.appendChild(addBtn);
+      section.appendChild(addRow);
       c.appendChild(section);
     });
   } else {
@@ -2212,20 +2178,19 @@ function renderDiario() {
   if(hb.animo>0) bCard.appendChild(el('div',{style:'text-align:center;font-size:12px;color:var(--amber);margin-top:4px'},[['Un día difícil','Día normal','Bien','Muy bien','Excelente'][hb.animo-1]]));
   c.appendChild(bCard);
 
-  // Palabra del día
-  const idioma=state.idiomaAprender||'en';
-  const lista=PALABRAS_DIA[idioma];
-  if(lista&&lista.length&&idioma!=='none'){
-    const pal=lista[getDayOfYear()%lista.length];
-    const banderas={en:'🇬🇧',de:'🇩🇪'};
-    const idiomaNombre={en:'Inglés',de:'Alemán'};
-    const pCard=div('card');
-    pCard.appendChild(el('div',{style:'font-size:11px;font-weight:600;color:var(--faint);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px'},[banderas[idioma]+' Palabra del día — '+idiomaNombre[idioma]]));
-    pCard.appendChild(el('div',{style:'font-size:28px;font-weight:800;color:var(--accent);margin-bottom:4px'},[pal.p]));
-    pCard.appendChild(el('div',{style:'font-size:14px;color:var(--muted);margin-bottom:8px'},[pal.t]));
-    pCard.appendChild(el('div',{style:'font-size:13px;color:var(--faint);font-style:italic'},['"'+pal.e+'"']));
-    c.appendChild(pCard);
-  }
+  // Palabras del día — siempre las 3
+  const hoyIdx=getDayOfYear();
+  const pCard=div('card');
+  pCard.appendChild(el('div',{style:'font-size:11px;font-weight:600;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px'},['✨ Palabras del día']));
+  [{key:'es',bandera:'🇦🇷',nombre:'Español'},{key:'en',bandera:'🇬🇧',nombre:'English'},{key:'de',bandera:'🇩🇪',nombre:'Deutsch'}].forEach(function(lang,idx){
+    if(idx>0) pCard.appendChild(div('',[],'height:1px;background:var(--border);margin:12px 0'));
+    const pal=PALABRAS_DIA[lang.key][hoyIdx%PALABRAS_DIA[lang.key].length];
+    pCard.appendChild(el('div',{style:'font-size:11px;color:var(--muted);margin-bottom:4px'},[lang.bandera+' '+lang.nombre]));
+    pCard.appendChild(el('div',{style:'font-size:22px;font-weight:800;color:var(--accent);margin-bottom:2px'},[pal.p]));
+    if(pal.t) pCard.appendChild(el('div',{style:'font-size:13px;color:var(--text);margin-bottom:4px'},[pal.t]));
+    pCard.appendChild(el('div',{style:'font-size:12px;color:var(--muted);font-style:italic'},['"'+pal.e+'"']));
+  });
+  c.appendChild(pCard);
 }
 
 // ── CASA — rutinas del hogar ──
