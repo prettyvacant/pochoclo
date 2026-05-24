@@ -56,6 +56,31 @@ if('serviceWorker' in navigator) {
   --blue:       #2563eb;
   --blue-light: #eff4ff;
 }
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#14131c;
+    --surface:#1e1d28;
+    --border:#2e2c3e;
+    --text:#e4e0dc;
+    --muted:#8a8496;
+    --faint:#5a5468;
+    --green-light:#0d2018;
+    --red-light:#2a0e0a;
+    --amber-light:#241a06;
+    --blue-light:#0a1428;
+  }
+}
+
+/* ── SPLASH ── */
+#splash{
+  position:fixed;inset:0;z-index:9999;
+  background:#7c5cfc;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
+  transition:opacity 0.3s ease;
+}
+#splash img{ width:88px;height:88px;border-radius:22px;box-shadow:0 8px 32px rgba(0,0,0,0.3) }
+#splash .splash-name{ color:rgba(255,255,255,0.95);font-size:26px;font-weight:800;letter-spacing:-0.5px }
+#splash.oculto{ opacity:0;pointer-events:none }
 
 /* Temas de color */
 .theme-slate  { --accent:#1e1b18; --accent-light:#f0eeec; --accent-muted:#3d3a37; --sidebar:#1e1b18 }
@@ -336,6 +361,11 @@ textarea:focus{ border-color:var(--accent) }
 <body>
 
 <div id="toast" class="toast"></div>
+<div id="splash">
+  <img src="icon.png" alt="pochoclo">
+  <span class="splash-name">pochoclo</span>
+</div>
+
 <div class="app-shell">
 
   <!-- Sidebar desktop -->
@@ -370,6 +400,11 @@ const S = {
 
 // ── HELPERS ──
 const pad = n => String(n).padStart(2,'0');
+function vibrar(ms) { if(navigator.vibrate) navigator.vibrate(ms||40); }
+function ocultarSplash() {
+  var sp=document.getElementById('splash');
+  if(sp){ sp.classList.add('oculto'); setTimeout(function(){ if(sp.parentNode) sp.parentNode.removeChild(sp); },350); }
+}
 const uid = () => Math.random().toString(36).slice(2,8);
 const mkKey = (y,m,d) => `${y}-${pad(m+1)}-${pad(d)}`;
 const $ = id => document.getElementById(id);
@@ -940,7 +975,7 @@ function renderRutinas() {
   tareasHoy.forEach(function(t,i){
     var row=div('',[],`display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid #f1f5f9`);
     var cb=div('',[t.done?'✓':''],`width:22px;height:22px;border-radius:6px;flex-shrink:0;background:${t.done?'#15803d':'transparent'};border:2px solid ${t.done?'#15803d':'#e2e8f0'};display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;cursor:pointer`);
-    cb.addEventListener('click',function(){ state.tareas[tareasKey][i].done=!state.tareas[tareasKey][i].done; save(); render(); });
+    cb.addEventListener('click',function(){ state.tareas[tareasKey][i].done=!state.tareas[tareasKey][i].done; if(state.tareas[tareasKey][i].done)vibrar(); save(); render(); });
     var txt=el('span',{style:`flex:1;font-size:14px;color:${t.done?'#94a3b8':'#0f172a'};text-decoration:${t.done?'line-through':'none'}`},[t.texto]);
     var del=btn('×','',function(){ state.tareas[tareasKey].splice(i,1); save(); render(); },'background:none;border:none;color:#cbd5e1;font-size:17px;padding:0 2px;cursor:pointer');
     row.appendChild(cb); row.appendChild(txt); row.appendChild(del);
@@ -1066,7 +1101,7 @@ function renderRutinas() {
           section.appendChild(row);
         } else {
           const row=div('rutina-row'+(done?' done':''));
-          row.addEventListener('click',()=>{const k=`${hoy}__${item.id}`;state.checks[k]=!state.checks[k];save();render();});
+          row.addEventListener('click',()=>{const k=`${hoy}__${item.id}`;state.checks[k]=!state.checks[k];if(state.checks[k])vibrar();save();render();});
           const cb=div('check-box'+(done?' done':''),[done?'✓':'']);
           const info=div('',[],`flex:1`);
           info.appendChild(el('div',{class:'rutina-nombre'+(done?' done':'')},[item.nombre]));
@@ -1122,7 +1157,7 @@ function renderRutinas() {
           const cell=div('semana-check'+(done?'':' '),done?['✓']:['']);
           cell.style.background=done?g.color:'#fff';
           cell.style.borderColor=done?g.color:'#e2e8f0';
-          cell.addEventListener('click',()=>{const k=`${d.key}__${item.id}`;state.checks[k]=!state.checks[k];save();render();});
+          cell.addEventListener('click',()=>{const k=`${d.key}__${item.id}`;state.checks[k]=!state.checks[k];if(state.checks[k])vibrar();save();render();});
           row.appendChild(cell);
         });
         sec.appendChild(row);
@@ -1237,7 +1272,7 @@ function renderMenu() {
        [ceK,'ce','🌙 CENA','#6d28d9','#818cf8',ceDone,ceText]].forEach(([k,tipo,label,labelColor,leftColor,done,text])=>{
         const row=div('meal-row'+(done?' done':''));
         row.style.borderLeftColor=done?'#15803d':leftColor;
-        row.addEventListener('click',()=>{state.meals[k]=!state.meals[k];save();render();});
+        row.addEventListener('click',()=>{state.meals[k]=!state.meals[k];if(state.meals[k])vibrar();save();render();});
         const cb=div('meal-check'+(done?' done':''),[done?'✓':'']);
         const info=div('',[],`flex:1`);
         info.appendChild(el('div',{style:`font-size:10px;font-weight:700;color:${labelColor};letter-spacing:1px;margin-bottom:3px`},[label]));
@@ -1383,7 +1418,7 @@ function renderCalendario() {
     tareasHoy.forEach((t,i)=>{
       const row=div('',[],`display:flex;align-items:center;gap:12px;padding:11px 14px;margin-bottom:7px;background:#fff;border:1.5px solid ${t.done?'#86efac':'#e2e8f0'};border-left:4px solid ${t.done?'#15803d':'var(--accent)'};border-radius:11px;transition:all 0.15s`);
       const cb=div('',[t.done?'✓':''],`width:24px;height:24px;border-radius:7px;flex-shrink:0;background:${t.done?'#15803d':'transparent'};border:2px solid ${t.done?'#15803d':'#e2e8f0'};display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;cursor:pointer`);
-      cb.addEventListener('click',()=>{state.tareas[tareasKey][i].done=!t.done;save();render();});
+      cb.addEventListener('click',()=>{state.tareas[tareasKey][i].done=!t.done;if(!t.done)vibrar();save();render();});
       const txt=el('span',{style:`flex:1;font-size:14px;color:${t.done?'#94a3b8':'#0f172a'};text-decoration:${t.done?'line-through':'none'}`},[t.texto]);
       const del=btn('×','',()=>{state.tareas[tareasKey].splice(i,1);save();render();},'background:none;border:none;font-size:17px;color:#94a3b8;padding:0 3px');
       row.appendChild(cb); row.appendChild(txt); row.appendChild(del);
@@ -2019,7 +2054,7 @@ function renderDiario() {
   tareasHoy.forEach(function(t,i){
     var row=div('',[],`display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--border)`);
     var cb=div('',[t.done?'✓':''],`width:24px;height:24px;border-radius:8px;flex-shrink:0;background:${t.done?'var(--green)':'transparent'};border:2px solid ${t.done?'var(--green)':'var(--border)'};display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;cursor:pointer`);
-    cb.addEventListener('click',function(){ state.tareas[tareasKey][i].done=!state.tareas[tareasKey][i].done; save(); render(); });
+    cb.addEventListener('click',function(){ state.tareas[tareasKey][i].done=!state.tareas[tareasKey][i].done; if(state.tareas[tareasKey][i].done)vibrar(); save(); render(); });
     var txt=el('span',{style:`flex:1;font-size:14px;color:${t.done?'var(--faint)':'var(--text)'};text-decoration:${t.done?'line-through':'none'}`},[t.texto]);
     var del=btn('×','',function(){ state.tareas[tareasKey].splice(i,1); save(); render(); },'background:none;border:none;color:var(--faint);font-size:17px;padding:0 2px;cursor:pointer');
     row.appendChild(cb); row.appendChild(txt); row.appendChild(del);
@@ -2064,7 +2099,7 @@ function renderCasa() {
     g.items.forEach(item=>{
       const done=!!state.checks[`${hoy}__${item.id}`];
       const row=div('rutina-row'+(done?' done':''));
-      row.addEventListener('click',()=>{ state.checks[`${hoy}__${item.id}`]=!state.checks[`${hoy}__${item.id}`]; save(); render(); });
+      row.addEventListener('click',()=>{ const kc=`${hoy}__${item.id}`;state.checks[kc]=!state.checks[kc];if(state.checks[kc])vibrar();save();render(); });
       const cb=div('check-box'+(done?' done':''),[done?'✓':'']);
       const info=div('',[],`flex:1`);
       info.appendChild(el('div',{class:'rutina-nombre'+(done?' done':'')},[item.nombre]));
@@ -2092,7 +2127,7 @@ function renderTrabajo() {
     g.items.forEach(item=>{
       const done=!!state.checks[`${hoy}__${item.id}`];
       const row=div('rutina-row'+(done?' done':''));
-      row.addEventListener('click',()=>{ state.checks[`${hoy}__${item.id}`]=!state.checks[`${hoy}__${item.id}`]; save(); render(); });
+      row.addEventListener('click',()=>{ const kt=`${hoy}__${item.id}`;state.checks[kt]=!state.checks[kt];if(state.checks[kt])vibrar();save();render(); });
       const cb=div('check-box'+(done?' done':''),[done?'✓':'']);
       const info=div('',[],`flex:1`);
       info.appendChild(el('div',{class:'rutina-nombre'+(done?' done':'')},[item.nombre]));
@@ -2314,10 +2349,11 @@ applyTheme();
 applyAppIcon();
 if(!state.perfil) {
   renderOnboarding();
+  ocultarSplash();
 } else {
   render();
   renderThemePicker();
-  // Sync from cloud on load
+  ocultarSplash();
   setTimeout(sbLoadAndMerge, 1000);
 }
 
