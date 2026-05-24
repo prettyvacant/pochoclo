@@ -13,8 +13,19 @@ Tutuca is a Progressive Web App (PWA) — no installation needed, runs in the br
 
 Data is saved locally on your device and synced to the cloud via Supabase, so everything stays up to date across all your devices.
 
-> This app was built in Spanish by an Argentine woman from Florencio Varela, Buenos Aires.  
-> Made with love in Berlin — but with 100% Varelense spirit. 🇦🇷
+> Handmade in Berlin with 100% Florencio Varela spirit 🇦🇷  
+> Built by an Argentine woman — with feminist and queer values at its core.
+
+---
+
+## Values
+
+Tutuca is a **feminist and queer app**.
+
+- Language is inclusive: the app uses gender-neutral Spanish (*elle*, *bienvenide*) and lets you choose your own pronoun
+- No assumptions about who you are, your family structure, your body, or your relationships
+- Built for people who take care of themselves and others, on their own terms
+- Free, open source, and forever without ads or tracking
 
 ---
 
@@ -87,5 +98,5 @@ Feel free to fork it, adapt it, make it yours.
 
 ---
 
-*Made with love in Berlin — but with 100% Varelense spirit 🇦🇷*  
-*Esta app fue hecha en español por una Argentina de Florencio Varela.*
+*Handmade in Berlin with 100% Florencio Varela spirit 🇦🇷*  
+*Esta app es feminista, queer y hecha con amor por una Argentina de Florencio Varela.*
