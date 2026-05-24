@@ -601,6 +601,8 @@ let state = {
   proyectos: S.get('proyectos')||JSON.parse(JSON.stringify(PROYECTOS_INIT)),
   editProj: null,
   showNewProj: false,
+  pronombre: S.get('pronombre')||'elle',
+  idiomaAprender: S.get('idiomaAprender')||'en',
 };
 
 function save() {
@@ -624,6 +626,8 @@ function save() {
   S.set('notas',state.notas);
   S.set('contadores',state.contadores);
   S.set('proyectos',state.proyectos);
+  S.set('pronombre',state.pronombre);
+  S.set('idiomaAprender',state.idiomaAprender);
 }
 
 function render() {
@@ -656,14 +660,114 @@ const TEMAS_PICKER = [
   {id:'amber',color:'#b45309',label:'Ámbar'},
 ];
 
+function bienvenide(pronombre) {
+  if(pronombre==='ella') return 'Bienvenida';
+  if(pronombre==='él') return 'Bienvenido';
+  return 'Bienvenide';
+}
+
+const PALABRAS_DIA = {
+  en: [
+    {p:'cozy',t:'acogedor/a',e:'The café was so cozy.'},
+    {p:'resilient',t:'resiliente',e:'You are so resilient.'},
+    {p:'boundary',t:'límite personal',e:'Setting boundaries is healthy.'},
+    {p:'healing',t:'sanación',e:'Healing takes time.'},
+    {p:'thrive',t:'florecer',e:'I want to thrive.'},
+    {p:'authentic',t:'auténtique',e:'Be your authentic self.'},
+    {p:'nurture',t:'cuidar',e:'Nurture what matters.'},
+    {p:'worthy',t:'merrecedore',e:'You are worthy of love.'},
+    {p:'gentle',t:'suave, gentil',e:'Be gentle with yourself.'},
+    {p:'fierce',t:'valiente, feroz',e:'Be fierce and kind.'},
+    {p:'bloom',t:'florecer',e:'Watch yourself bloom.'},
+    {p:'grounded',t:'enraizade',e:'Stay grounded.'},
+    {p:'wonder',t:'asombro',e:'Full of wonder.'},
+    {p:'solitude',t:'soledad',e:'Enjoy your solitude.'},
+    {p:'courage',t:'valentía',e:'It takes courage.'},
+    {p:'sacred',t:'sagrado',e:'Your time is sacred.'},
+    {p:'nourish',t:'nutrir',e:'Nourish your body.'},
+    {p:'rest',t:'descanso',e:'Rest is productive.'},
+    {p:'soft',t:'suave',e:'Stay soft.'},
+    {p:'glow',t:'brillar',e:'Let yourself glow.'},
+    {p:'empathy',t:'empatía',e:'Show empathy to others.'},
+    {p:'growth',t:'crecimiento',e:'Personal growth takes time.'},
+    {p:'grateful',t:'agradecide',e:'I am so grateful.'},
+    {p:'wild',t:'salvaje',e:'Stay wild.'},
+    {p:'tender',t:'tierne',e:'A tender heart.'},
+    {p:'anchor',t:'ancla',e:'You are my anchor.'},
+    {p:'flourish',t:'prosperar',e:'Flourish every day.'},
+    {p:'strength',t:'fuerza',e:'Find your strength.'},
+    {p:'joy',t:'alegría',e:'Find your joy.'},
+    {p:'free',t:'libre',e:'You are free.'},
+  ],
+  de: [
+    {p:'Fernweh',t:'nostalgia por lo lejano',e:'Ich habe so ein Fernweh.'},
+    {p:'Geborgenheit',t:'seguridad emocional, calidez',e:'Ich fühle mich geborgen.'},
+    {p:'Lebensfreude',t:'alegría de vivir',e:'Voller Lebensfreude sein.'},
+    {p:'Sehnsucht',t:'anhelo profundo',e:'Die Sehnsucht nach Hause.'},
+    {p:'Wanderlust',t:'ganas de explorar el mundo',e:'Meine Wanderlust ist groß.'},
+    {p:'Gemütlichkeit',t:'calidez acogedora',e:'Die Gemütlichkeit des Cafés.'},
+    {p:'Feierabend',t:'fin de la jornada, merecido descanso',e:'Endlich Feierabend!'},
+    {p:'Zweisamkeit',t:'intimidad entre dos personas',e:'Schöne Zweisamkeit genießen.'},
+    {p:'Weltschmerz',t:'dolor ante las injusticias del mundo',e:'Ich fühle Weltschmerz.'},
+    {p:'Mitgefühl',t:'compasión',e:'Zeig Mitgefühl.'},
+    {p:'Aufgehoben',t:'sentirse contenide y segure',e:'Ich fühle mich aufgehoben.'},
+    {p:'Freiheit',t:'libertad',e:'Freiheit ist wichtig.'},
+    {p:'Kraft',t:'fuerza interior',e:'Du hast so viel Kraft.'},
+    {p:'Mut',t:'valentía',e:'Hab Mut!'},
+    {p:'Ruhe',t:'calma, paz',e:'Ich brauche Ruhe.'},
+    {p:'Heilung',t:'sanación',e:'Heilung braucht Zeit.'},
+    {p:'Stärke',t:'fortaleza',e:'Innere Stärke zeigen.'},
+    {p:'Dankbarkeit',t:'gratitud',e:'Dankbarkeit ist schön.'},
+    {p:'Sanftmut',t:'suavidad, dulzura',e:'Mit Sanftmut durchs Leben.'},
+    {p:'Wildheit',t:'fuerza salvaje',e:'Deine Wildheit ist schön.'},
+    {p:'Blüte',t:'florecer, estar en plenitud',e:'In voller Blüte sein.'},
+    {p:'Würde',t:'dignidad',e:'Mit Würde leben.'},
+    {p:'Freude',t:'alegría',e:'Voller Freude sein.'},
+    {p:'Anker',t:'ancla',e:'Du bist mein Anker.'},
+    {p:'Zauber',t:'magia',e:'Der Zauber des Lebens.'},
+    {p:'Wachstum',t:'crecimiento',e:'Persönliches Wachstum.'},
+    {p:'Leuchten',t:'brillar, irradiar luz',e:'Lass dich leuchten.'},
+    {p:'Rast',t:'descanso merecido',e:'Gönn dir Rast.'},
+    {p:'Zartheit',t:'delicadeza, ternura',e:'Mit Zartheit handeln.'},
+    {p:'Umarmen',t:'abrazar',e:'Lass dich umarmen.'},
+  ]
+};
+
+function getDayOfYear() {
+  const now=new Date();
+  const start=new Date(now.getFullYear(),0,0);
+  return Math.floor((now-start)/86400000);
+}
+
 function renderOnboarding() {
   document.body.innerHTML = '';
   const wrap = el('div',{style:'min-height:100vh;background:#0f172a;display:flex;align-items:center;justify-content:center;padding:24px'});
   const box = el('div',{style:'background:#1e293b;border-radius:20px;padding:32px 24px;max-width:400px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.5)'});
 
   box.appendChild(el('div',{style:'font-size:36px;text-align:center;margin-bottom:8px'},['✨']));
-  box.appendChild(el('div',{style:'font-size:22px;font-weight:800;color:#f8fafc;text-align:center;margin-bottom:4px'},['Bienvenida']));
-  box.appendChild(el('div',{style:'font-size:13px;color:#64748b;text-align:center;margin-bottom:24px'},['Personalizá tu app antes de empezar']));
+  box.appendChild(el('div',{style:'font-size:22px;font-weight:800;color:#f8fafc;text-align:center;margin-bottom:4px'},['Bienvenide']));
+  box.appendChild(el('div',{style:'font-size:13px;color:#64748b;text-align:center;margin-bottom:8px'},['Personalizá tu app antes de empezar']));
+  box.appendChild(el('div',{style:'font-size:11px;color:#475569;text-align:center;margin-bottom:4px;font-style:italic'},['Esta app sigue valores feministas y queer.']));
+  box.appendChild(el('div',{style:'font-size:11px;color:#475569;text-align:center;margin-bottom:24px;font-style:italic'},['Handmade in Berlin with 100% Florencio Varela spirit 🇦🇷']));
+
+  // Pronombre
+  box.appendChild(el('div',{style:'font-size:12px;font-weight:600;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px'},['¿Cómo preferís que te llamemos?']));
+  let selPronombre='elle';
+  const pronombres=[{id:'ella',label:'ella 💜'},{id:'él',label:'él 💙'},{id:'elle',label:'elle 🤍'}];
+  const pronRow=el('div',{style:'display:flex;gap:8px;margin-bottom:16px'});
+  pronombres.forEach(function(pr){
+    const pb=el('button',{style:`flex:1;border-radius:10px;padding:10px 4px;font-size:13px;font-weight:600;border:2px solid ${pr.id===selPronombre?'#6d28d9':'#334155'};background:${pr.id===selPronombre?'#6d28d9':'transparent'};color:${pr.id===selPronombre?'#fff':'#94a3b8'};cursor:pointer;transition:all 0.12s;font-family:inherit`},[pr.label]);
+    pb.addEventListener('click',function(){
+      selPronombre=pr.id;
+      pronRow.querySelectorAll('button').forEach(function(b2,i){
+        b2.style.borderColor=pronombres[i].id===selPronombre?'#6d28d9':'#334155';
+        b2.style.background=pronombres[i].id===selPronombre?'#6d28d9':'transparent';
+        b2.style.color=pronombres[i].id===selPronombre?'#fff':'#94a3b8';
+      });
+    });
+    pronRow.appendChild(pb);
+  });
+  box.appendChild(pronRow);
 
   // Nombre
   box.appendChild(el('div',{style:'font-size:12px;font-weight:600;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px'},['Tu nombre']));
@@ -679,6 +783,25 @@ function renderOnboarding() {
   box.appendChild(el('div',{style:'font-size:12px;font-weight:600;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px'},['Tu email (para sincronizar entre dispositivos)']));
   const emailInp = el('input',{id:'ob-email',type:'email',placeholder:'tumail@ejemplo.com',style:'width:100%;border:1px solid #334155;border-radius:10px;padding:12px 14px;background:#0f172a;color:#f8fafc;outline:none;font-size:15px;margin-bottom:16px;box-sizing:border-box;font-family:inherit'});
   box.appendChild(emailInp);
+
+  // Idioma a aprender
+  box.appendChild(el('div',{style:'font-size:12px;font-weight:600;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px'},['Quiero aprender']));
+  let selIdioma='en';
+  const idiomas=[{id:'en',label:'🇬🇧 Inglés'},{id:'de',label:'🇩🇪 Alemán'},{id:'none',label:'— Ninguno'}];
+  const idiomaRow=el('div',{style:'display:flex;gap:8px;margin-bottom:16px'});
+  idiomas.forEach(function(id){
+    const ib=el('button',{style:`flex:1;border-radius:10px;padding:10px 4px;font-size:12px;font-weight:600;border:2px solid ${id.id===selIdioma?'#6d28d9':'#334155'};background:${id.id===selIdioma?'#6d28d9':'transparent'};color:${id.id===selIdioma?'#fff':'#94a3b8'};cursor:pointer;transition:all 0.12s;font-family:inherit`},[id.label]);
+    ib.addEventListener('click',function(){
+      selIdioma=id.id;
+      idiomaRow.querySelectorAll('button').forEach(function(b2,i){
+        b2.style.borderColor=idiomas[i].id===selIdioma?'#6d28d9':'#334155';
+        b2.style.background=idiomas[i].id===selIdioma?'#6d28d9':'transparent';
+        b2.style.color=idiomas[i].id===selIdioma?'#fff':'#94a3b8';
+      });
+    });
+    idiomaRow.appendChild(ib);
+  });
+  box.appendChild(idiomaRow);
 
   // Emoji picker
   box.appendChild(el('div',{style:'font-size:12px;font-weight:600;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px'},['Tu ícono']));
@@ -716,10 +839,12 @@ function renderOnboarding() {
   // Submit
   const submitBtn=el('button',{style:'width:100%;background:#6d28d9;color:#fff;border:none;border-radius:12px;padding:14px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit'},['Empezar →']);
   submitBtn.addEventListener('click',()=>{
-    const nombre=document.getElementById('ob-name')?.value.trim()||'Usuario';
-    const año=document.getElementById('ob-year')?.value.trim()||String(new Date().getFullYear());
-    const email=document.getElementById('ob-email')?.value.trim()||'';
+    const nombre=document.getElementById('ob-name')&&document.getElementById('ob-name').value.trim()||'Usuario';
+    const año=document.getElementById('ob-year')&&document.getElementById('ob-year').value.trim()||String(new Date().getFullYear());
+    const email=document.getElementById('ob-email')&&document.getElementById('ob-email').value.trim()||'';
     state.perfil={nombre,emoji:selectedEmoji,año,email};
+    state.pronombre=selPronombre;
+    state.idiomaAprender=selIdioma;
     state.theme=selectedTheme;
     save();
     // Rebuild app
@@ -2086,6 +2211,21 @@ function renderDiario() {
   bCard.appendChild(aniRow);
   if(hb.animo>0) bCard.appendChild(el('div',{style:'text-align:center;font-size:12px;color:var(--amber);margin-top:4px'},[['Un día difícil','Día normal','Bien','Muy bien','Excelente'][hb.animo-1]]));
   c.appendChild(bCard);
+
+  // Palabra del día
+  const idioma=state.idiomaAprender||'en';
+  const lista=PALABRAS_DIA[idioma];
+  if(lista&&lista.length&&idioma!=='none'){
+    const pal=lista[getDayOfYear()%lista.length];
+    const banderas={en:'🇬🇧',de:'🇩🇪'};
+    const idiomaNombre={en:'Inglés',de:'Alemán'};
+    const pCard=div('card');
+    pCard.appendChild(el('div',{style:'font-size:11px;font-weight:600;color:var(--faint);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px'},[banderas[idioma]+' Palabra del día — '+idiomaNombre[idioma]]));
+    pCard.appendChild(el('div',{style:'font-size:28px;font-weight:800;color:var(--accent);margin-bottom:4px'},[pal.p]));
+    pCard.appendChild(el('div',{style:'font-size:14px;color:var(--muted);margin-bottom:8px'},[pal.t]));
+    pCard.appendChild(el('div',{style:'font-size:13px;color:var(--faint);font-style:italic'},['"'+pal.e+'"']));
+    c.appendChild(pCard);
+  }
 }
 
 // ── CASA — rutinas del hogar ──
