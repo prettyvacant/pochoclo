@@ -676,104 +676,38 @@ function bienvenide(pronombre) {
   return 'Bienvenide';
 }
 
-const PALABRAS_DIA = {
-  es: [
-    {p:'madrugada',t:'las horas antes del amanecer',e:'La madrugada guarda secretos.'},
-    {p:'añoranza',t:'nostalgia suave y profunda',e:'Siento añoranza de ese lugar.'},
-    {p:'entrañable',t:'que se quiere con el alma',e:'Es un lugar muy entrañable.'},
-    {p:'sosiego',t:'calma interior',e:'Encontré mi sosiego.'},
-    {p:'efímero',t:'que dura poco y vale mucho',e:'Los momentos efímeros son preciosos.'},
-    {p:'querencia',t:'el lugar donde una se siente en casa',e:'Este lugar es mi querencia.'},
-    {p:'asombro',t:'capacidad de maravillarse',e:'El asombro es un regalo.'},
-    {p:'desvelo',t:'esfuerzo hecho con amor',e:'Su desvelo era por amor.'},
-    {p:'alborada',t:'la primera luz del día',e:'La alborada pintó el cielo.'},
-    {p:'ternura',t:'suavidad del corazón',e:'Con ternura se hace todo.'},
-    {p:'plenitud',t:'sentirse completa',e:'Vivir en plenitud.'},
-    {p:'brisa',t:'viento suave',e:'Una brisa de verano.'},
-    {p:'valentía',t:'fuerza para ser une misme',e:'La valentía de existir.'},
-    {p:'florecer',t:'crecer desde adentro',e:'Es tiempo de florecer.'},
-    {p:'amanecer',t:'cada día comienza de nuevo',e:'Cada amanecer es nuevo.'},
-    {p:'cariño',t:'afecto genuino',e:'Con mucho cariño.'},
-    {p:'maravilla',t:'lo que sorprende el corazón',e:'La maravilla de lo cotidiano.'},
-    {p:'hogar',t:'donde una pertenece',e:'Sentirse en hogar.'},
-    {p:'orgullo',t:'honrar lo que une es',e:'Con orgullo de ser.'},
-    {p:'raíz',t:'de dónde venimos',e:'Mis raíces me sostienen.'},
-    {p:'vuelo',t:'hacia dónde vamos',e:'Dejarse llevar en vuelo.'},
-    {p:'sueño',t:'lo que imaginamos posible',e:'Mis sueños son míos.'},
-    {p:'luz',t:'lo que nos guía',e:'Sos mi luz.'},
-    {p:'fuerza',t:'lo que nos sostiene',e:'Encontrá tu fuerza.'},
-    {p:'camino',t:'lo que recorremos',e:'El camino se hace al andar.'},
-    {p:'abrazo',t:'el lenguaje del cuerpo',e:'Un abrazo lo cura todo.'},
-    {p:'calma',t:'el descanso del ruido',e:'Respirá, encontrá la calma.'},
-    {p:'gratitud',t:'reconocer lo que se tiene',e:'Con gratitud infinita.'},
-    {p:'libertad',t:'el derecho de ser',e:'Vivir en libertad.'},
-    {p:'sangre',t:'lo que nos une con nuestros orígenes',e:'La sangre llama.'},
-  ],
-  en: [
-    {p:'cozy',t:'acogedor/a',e:'The café was so cozy.'},
-    {p:'resilient',t:'resiliente',e:'You are so resilient.'},
-    {p:'boundary',t:'límite personal',e:'Setting boundaries is healthy.'},
-    {p:'healing',t:'sanación',e:'Healing takes time.'},
-    {p:'thrive',t:'florecer',e:'I want to thrive.'},
-    {p:'authentic',t:'auténtique',e:'Be your authentic self.'},
-    {p:'nurture',t:'cuidar',e:'Nurture what matters.'},
-    {p:'worthy',t:'merrecedore',e:'You are worthy of love.'},
-    {p:'gentle',t:'suave, gentil',e:'Be gentle with yourself.'},
-    {p:'fierce',t:'valiente, feroz',e:'Be fierce and kind.'},
-    {p:'bloom',t:'florecer',e:'Watch yourself bloom.'},
-    {p:'grounded',t:'enraizade',e:'Stay grounded.'},
-    {p:'wonder',t:'asombro',e:'Full of wonder.'},
-    {p:'solitude',t:'soledad',e:'Enjoy your solitude.'},
-    {p:'courage',t:'valentía',e:'It takes courage.'},
-    {p:'sacred',t:'sagrado',e:'Your time is sacred.'},
-    {p:'nourish',t:'nutrir',e:'Nourish your body.'},
-    {p:'rest',t:'descanso',e:'Rest is productive.'},
-    {p:'soft',t:'suave',e:'Stay soft.'},
-    {p:'glow',t:'brillar',e:'Let yourself glow.'},
-    {p:'empathy',t:'empatía',e:'Show empathy to others.'},
-    {p:'growth',t:'crecimiento',e:'Personal growth takes time.'},
-    {p:'grateful',t:'agradecide',e:'I am so grateful.'},
-    {p:'wild',t:'salvaje',e:'Stay wild.'},
-    {p:'tender',t:'tierne',e:'A tender heart.'},
-    {p:'anchor',t:'ancla',e:'You are my anchor.'},
-    {p:'flourish',t:'prosperar',e:'Flourish every day.'},
-    {p:'strength',t:'fuerza',e:'Find your strength.'},
-    {p:'joy',t:'alegría',e:'Find your joy.'},
-    {p:'free',t:'libre',e:'You are free.'},
-  ],
-  de: [
-    {p:'Fernweh',t:'nostalgia por lo lejano',e:'Ich habe so ein Fernweh.'},
-    {p:'Geborgenheit',t:'seguridad emocional, calidez',e:'Ich fühle mich geborgen.'},
-    {p:'Lebensfreude',t:'alegría de vivir',e:'Voller Lebensfreude sein.'},
-    {p:'Sehnsucht',t:'anhelo profundo',e:'Die Sehnsucht nach Hause.'},
-    {p:'Wanderlust',t:'ganas de explorar el mundo',e:'Meine Wanderlust ist groß.'},
-    {p:'Gemütlichkeit',t:'calidez acogedora',e:'Die Gemütlichkeit des Cafés.'},
-    {p:'Feierabend',t:'fin de la jornada, merecido descanso',e:'Endlich Feierabend!'},
-    {p:'Zweisamkeit',t:'intimidad entre dos personas',e:'Schöne Zweisamkeit genießen.'},
-    {p:'Weltschmerz',t:'dolor ante las injusticias del mundo',e:'Ich fühle Weltschmerz.'},
-    {p:'Mitgefühl',t:'compasión',e:'Zeig Mitgefühl.'},
-    {p:'Aufgehoben',t:'sentirse contenide y segure',e:'Ich fühle mich aufgehoben.'},
-    {p:'Freiheit',t:'libertad',e:'Freiheit ist wichtig.'},
-    {p:'Kraft',t:'fuerza interior',e:'Du hast so viel Kraft.'},
-    {p:'Mut',t:'valentía',e:'Hab Mut!'},
-    {p:'Ruhe',t:'calma, paz',e:'Ich brauche Ruhe.'},
-    {p:'Heilung',t:'sanación',e:'Heilung braucht Zeit.'},
-    {p:'Stärke',t:'fortaleza',e:'Innere Stärke zeigen.'},
-    {p:'Dankbarkeit',t:'gratitud',e:'Dankbarkeit ist schön.'},
-    {p:'Sanftmut',t:'suavidad, dulzura',e:'Mit Sanftmut durchs Leben.'},
-    {p:'Wildheit',t:'fuerza salvaje',e:'Deine Wildheit ist schön.'},
-    {p:'Blüte',t:'florecer, estar en plenitud',e:'In voller Blüte sein.'},
-    {p:'Würde',t:'dignidad',e:'Mit Würde leben.'},
-    {p:'Freude',t:'alegría',e:'Voller Freude sein.'},
-    {p:'Anker',t:'ancla',e:'Du bist mein Anker.'},
-    {p:'Zauber',t:'magia',e:'Der Zauber des Lebens.'},
-    {p:'Wachstum',t:'crecimiento',e:'Persönliches Wachstum.'},
-    {p:'Leuchten',t:'brillar, irradiar luz',e:'Lass dich leuchten.'},
-    {p:'Rast',t:'descanso merecido',e:'Gönn dir Rast.'},
-    {p:'Zartheit',t:'delicadeza, ternura',e:'Mit Zartheit handeln.'},
-    {p:'Umarmen',t:'abrazar',e:'Lass dich umarmen.'},
-  ]
-};
+const PALABRAS_DIA = [
+  {es:{p:'libertad',e:'Vivir en libertad.'},en:{p:'freedom',e:'You are free.'},de:{p:'Freiheit',e:'Freiheit ist wichtig.'}},
+  {es:{p:'fuerza',e:'Encontrá tu fuerza.'},en:{p:'strength',e:'Find your strength.'},de:{p:'Kraft',e:'Du hast so viel Kraft.'}},
+  {es:{p:'valentía',e:'La valentía de ser une misme.'},en:{p:'courage',e:'It takes courage.'},de:{p:'Mut',e:'Hab Mut!'}},
+  {es:{p:'calma',e:'Respirá, encontrá la calma.'},en:{p:'calm',e:'Find your calm.'},de:{p:'Ruhe',e:'Ich brauche Ruhe.'}},
+  {es:{p:'sanación',e:'La sanación lleva tiempo.'},en:{p:'healing',e:'Healing takes time.'},de:{p:'Heilung',e:'Heilung braucht Zeit.'}},
+  {es:{p:'gratitud',e:'Con gratitud infinita.'},en:{p:'gratitude',e:'I am so grateful.'},de:{p:'Dankbarkeit',e:'Dankbarkeit ist schön.'}},
+  {es:{p:'salvaje',e:'Quedate salvaje.'},en:{p:'wild',e:'Stay wild.'},de:{p:'Wildheit',e:'Deine Wildheit ist schön.'}},
+  {es:{p:'florecer',e:'Es tiempo de florecer.'},en:{p:'bloom',e:'Watch yourself bloom.'},de:{p:'Blüte',e:'In voller Blüte sein.'}},
+  {es:{p:'dignidad',e:'Vivir con dignidad.'},en:{p:'dignity',e:'You are worthy.'},de:{p:'Würde',e:'Mit Würde leben.'}},
+  {es:{p:'alegría',e:'Con alegría de vivir.'},en:{p:'joy',e:'Find your joy.'},de:{p:'Freude',e:'Voller Freude sein.'}},
+  {es:{p:'ancla',e:'Mis raíces son mi ancla.'},en:{p:'anchor',e:'You are my anchor.'},de:{p:'Anker',e:'Du bist mein Anker.'}},
+  {es:{p:'magia',e:'La magia de lo cotidiano.'},en:{p:'magic',e:'The magic of life.'},de:{p:'Zauber',e:'Der Zauber des Lebens.'}},
+  {es:{p:'crecimiento',e:'El crecimiento es lento y hermoso.'},en:{p:'growth',e:'Personal growth takes time.'},de:{p:'Wachstum',e:'Persönliches Wachstum.'}},
+  {es:{p:'brillar',e:'Dejate brillar.'},en:{p:'shine',e:'Let yourself glow.'},de:{p:'Leuchten',e:'Lass dich leuchten.'}},
+  {es:{p:'descanso',e:'El descanso es necesario.'},en:{p:'rest',e:'Rest is productive.'},de:{p:'Rast',e:'Gönn dir Rast.'}},
+  {es:{p:'ternura',e:'Con ternura se hace todo.'},en:{p:'tenderness',e:'A tender heart.'},de:{p:'Zartheit',e:'Mit Zartheit handeln.'}},
+  {es:{p:'abrazo',e:'Un abrazo lo cura todo.'},en:{p:'embrace',e:'Let yourself be held.'},de:{p:'Umarmen',e:'Lass dich umarmen.'}},
+  {es:{p:'fortaleza',e:'La fortaleza interior.'},en:{p:'resilience',e:'You are so resilient.'},de:{p:'Stärke',e:'Innere Stärke zeigen.'}},
+  {es:{p:'suavidad',e:'Con suavidad por la vida.'},en:{p:'gentleness',e:'Be gentle with yourself.'},de:{p:'Sanftmut',e:'Mit Sanftmut durchs Leben.'}},
+  {es:{p:'hogar',e:'Sentirse en hogar.'},en:{p:'belonging',e:'You belong here.'},de:{p:'Geborgenheit',e:'Ich fühle mich geborgen.'}},
+  {es:{p:'vivir plene',e:'La plena alegría de vivir.'},en:{p:'thrive',e:'I want to thrive.'},de:{p:'Lebensfreude',e:'Voller Lebensfreude sein.'}},
+  {es:{p:'añoranza',e:'Siento añoranza de ese lugar.'},en:{p:'longing',e:'A deep longing inside.'},de:{p:'Sehnsucht',e:'Die Sehnsucht nach Hause.'}},
+  {es:{p:'explorar',e:'Las ganas de explorar el mundo.'},en:{p:'wanderlust',e:'Follow your wanderlust.'},de:{p:'Wanderlust',e:'Meine Wanderlust ist groß.'}},
+  {es:{p:'calidez',e:'Un lugar lleno de calidez.'},en:{p:'coziness',e:'The café was so cozy.'},de:{p:'Gemütlichkeit',e:'Die Gemütlichkeit des Cafés.'}},
+  {es:{p:'merecido descanso',e:'¡Por fin el merecido descanso!'},en:{p:'knock off',e:'Finally, time to rest.'},de:{p:'Feierabend',e:'Endlich Feierabend!'}},
+  {es:{p:'compañía',e:'La belleza de estar juntes.'},en:{p:'togetherness',e:'Together is beautiful.'},de:{p:'Zweisamkeit',e:'Schöne Zweisamkeit genießen.'}},
+  {es:{p:'dolor del mundo',e:'Sentir el dolor del mundo.'},en:{p:'world-pain',e:'Feel the world deeply.'},de:{p:'Weltschmerz',e:'Ich fühle Weltschmerz.'}},
+  {es:{p:'compasión',e:'Con compasión hacia todo.'},en:{p:'compassion',e:'Show compassion to others.'},de:{p:'Mitgefühl',e:'Zeig Mitgefühl.'}},
+  {es:{p:'pertenencia',e:'Sentirse contenide y segure.'},en:{p:'held',e:'You are held.'},de:{p:'Aufgehoben',e:'Ich fühle mich aufgehoben.'}},
+  {es:{p:'llamado lejano',e:'El llamado de lo lejano.'},en:{p:'faraway',e:'My heart calls to faraway.'},de:{p:'Fernweh',e:'Ich habe so ein Fernweh.'}},
+];
 
 function getDayOfYear() {
   const now=new Date();
@@ -2182,16 +2116,16 @@ function renderDiario() {
   if(hb.animo>0) bCard.appendChild(el('div',{style:'text-align:center;font-size:12px;color:var(--amber);margin-top:4px'},[['Un día difícil','Día normal','Bien','Muy bien','Excelente'][hb.animo-1]]));
   c.appendChild(bCard);
 
-  // Palabras del día — siempre las 3
+  // Palabras del día — un concepto en los 3 idiomas
   const hoyIdx=getDayOfYear();
+  const entrada=PALABRAS_DIA[hoyIdx%PALABRAS_DIA.length];
   const pCard=div('card');
   pCard.appendChild(el('div',{style:'font-size:11px;font-weight:600;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px'},['✨ Palabras del día']));
   [{key:'es',bandera:'🇦🇷',nombre:'Español'},{key:'en',bandera:'🇬🇧',nombre:'English'},{key:'de',bandera:'🇩🇪',nombre:'Deutsch'}].forEach(function(lang,idx){
     if(idx>0) pCard.appendChild(div('',[],'height:1px;background:var(--border);margin:12px 0'));
-    const pal=PALABRAS_DIA[lang.key][hoyIdx%PALABRAS_DIA[lang.key].length];
+    const pal=entrada[lang.key];
     pCard.appendChild(el('div',{style:'font-size:11px;color:var(--muted);margin-bottom:4px'},[lang.bandera+' '+lang.nombre]));
     pCard.appendChild(el('div',{style:'font-size:22px;font-weight:800;color:var(--accent);margin-bottom:2px'},[pal.p]));
-    if(pal.t) pCard.appendChild(el('div',{style:'font-size:13px;color:var(--text);margin-bottom:4px'},[pal.t]));
     pCard.appendChild(el('div',{style:'font-size:12px;color:var(--muted);font-style:italic'},['"'+pal.e+'"']));
   });
   c.appendChild(pCard);
