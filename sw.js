@@ -1,10 +1,10 @@
 // Service Worker — auto-update on new version
-const CACHE = 'pochoclo-v2026-05-24-001';
+const CACHE = 'pochoclo-v2026-05-24-002';
 
 self.addEventListener('install', function(e) {
   e.waitUntil(
     caches.open(CACHE).then(function(cache) {
-      return cache.addAll(['./', './manifest.json', './icon.svg']);
+      return cache.addAll(['./', './manifest.json', './icon.png', './icon.svg']);
     })
   );
 });
