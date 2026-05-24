@@ -2177,12 +2177,12 @@ function renderContent() {
   if(un) un.textContent=((state.perfil&&state.perfil.emoji)||'')+((state.perfil&&state.perfil.nombre)?` ${state.perfil.nombre}`:'Mi app');
   const t=state.tab;
   if(state.showPerfil){ renderPerfilEditor(); return; }
-  if(t==='rutinas') renderRutinas();
-  else if(t==='menú') renderMenu();
-  else if(t==='finanzas') renderFinanzas();
-  else if(t==='proyectos') renderProyectos();
-  else if(t==='compras') renderCompras();
-  else if(t==='notas') renderNotas();
+  if(t==='diario') renderDiario();
+  else if(t==='rutinas') renderRutinas();
+  else if(t==='casa') renderCasa();
+  else if(t==='trabajo') renderTrabajo();
+  else if(t==='vida') renderVida();
+  else if(t==='personal') renderPersonal();
   } catch(err) {
     console.error('renderContent error:', err);
     const c=$('content');
