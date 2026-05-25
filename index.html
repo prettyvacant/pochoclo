@@ -881,6 +881,11 @@ function renderPerfilEditor() {
   const nameInp=el('input',{id:'pe-name',class:'inp',value:p.nombre||'',placeholder:'Tu nombre',style:'margin-bottom:12px;display:block'});
   box.appendChild(nameInp);
 
+  // Email
+  box.appendChild(el('div',{style:'font-size:12px;font-weight:600;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px'},['Email (para sincronizar datos)']));
+  const emailInp=el('input',{id:'pe-email',class:'inp',type:'email',value:p.email||'',placeholder:'tumail@ejemplo.com',style:'margin-bottom:16px;display:block'});
+  box.appendChild(emailInp);
+
   // Año
   box.appendChild(el('div',{style:'font-size:12px;font-weight:600;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px'},['Año del sistema']));
   const yearInp=el('input',{id:'pe-year',class:'inp',value:p.año||String(new Date().getFullYear()),placeholder:'2026',style:'margin-bottom:16px;display:block'});
@@ -920,7 +925,8 @@ function renderPerfilEditor() {
 
   // Save + reset
   box.appendChild(el('button',{class:'btn-primary',style:'margin-bottom:10px',onclick:()=>{
-    state.perfil={nombre:$('pe-name').value.trim()||'Usuario',emoji:selEmoji,año:$('pe-year').value.trim()};
+    const prevEmail=(state.perfil&&state.perfil.email)||'';
+    state.perfil={nombre:$('pe-name').value.trim()||'Usuario',emoji:selEmoji,año:$('pe-year').value.trim(),email:($('pe-email')&&$('pe-email').value.trim())||prevEmail};
     state.showPerfil=false; save(); render(); renderTabs(); showToast('✓ Perfil guardado');
   }},['Guardar cambios']));
 
@@ -2382,10 +2388,20 @@ function scheduleSbSave() {
 
 async function sbLoadAndMerge() {
   if(!state.perfil) return;
-  const userId = (state.perfil.email || state.perfil.nombre) + '_tutuca';
+  const baseId = state.perfil.email || state.perfil.nombre;
+  const userId = baseId + '_tutuca';
   const ind = document.getElementById('sync-indicator');
   if(ind) { ind.textContent='☁️ Sync...'; ind.style.color='#1d4ed8'; }
-  const remote = await sbLoad(userId);
+  let remote = await sbLoad(userId);
+  // Migración: si no hay datos en _tutuca, buscar en _pochoclo (clave anterior al renombre)
+  if(!remote) {
+    const oldId = baseId + '_pochoclo';
+    remote = await sbLoad(oldId);
+    if(remote) {
+      // Encontrado en clave vieja → migrar a clave nueva
+      await sbSave(userId, remote);
+    }
+  }
   if(!remote) {
     if(ind) { ind.textContent='☁️'; ind.style.color='#94a3b8'; }
     return;
