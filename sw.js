@@ -1,5 +1,5 @@
 // Service Worker — auto-update on new version
-const CACHE = 'tutuca-v2026-05-25-003';
+const CACHE = 'tutuca-v2026-05-25-004';
 
 self.addEventListener('install', function(e) {
   e.waitUntil(

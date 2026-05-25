@@ -675,36 +675,42 @@ function bienvenide(pronombre) {
 }
 
 const PALABRAS_DIA = [
-  {es:{p:'libertad',e:'Vivir en libertad.'},en:{p:'freedom',e:'You are free.'},de:{p:'Freiheit',e:'Freiheit ist wichtig.'}},
-  {es:{p:'fuerza',e:'Encontrá tu fuerza.'},en:{p:'strength',e:'Find your strength.'},de:{p:'Kraft',e:'Du hast so viel Kraft.'}},
-  {es:{p:'valentía',e:'La valentía de ser une misme.'},en:{p:'courage',e:'It takes courage.'},de:{p:'Mut',e:'Hab Mut!'}},
-  {es:{p:'calma',e:'Respirá, encontrá la calma.'},en:{p:'calm',e:'Find your calm.'},de:{p:'Ruhe',e:'Ich brauche Ruhe.'}},
-  {es:{p:'sanación',e:'La sanación lleva tiempo.'},en:{p:'healing',e:'Healing takes time.'},de:{p:'Heilung',e:'Heilung braucht Zeit.'}},
-  {es:{p:'gratitud',e:'Con gratitud infinita.'},en:{p:'gratitude',e:'I am so grateful.'},de:{p:'Dankbarkeit',e:'Dankbarkeit ist schön.'}},
-  {es:{p:'salvaje',e:'Quedate salvaje.'},en:{p:'wild',e:'Stay wild.'},de:{p:'Wildheit',e:'Deine Wildheit ist schön.'}},
-  {es:{p:'florecer',e:'Es tiempo de florecer.'},en:{p:'bloom',e:'Watch yourself bloom.'},de:{p:'Blüte',e:'In voller Blüte sein.'}},
-  {es:{p:'dignidad',e:'Vivir con dignidad.'},en:{p:'dignity',e:'You are worthy.'},de:{p:'Würde',e:'Mit Würde leben.'}},
-  {es:{p:'alegría',e:'Con alegría de vivir.'},en:{p:'joy',e:'Find your joy.'},de:{p:'Freude',e:'Voller Freude sein.'}},
-  {es:{p:'ancla',e:'Mis raíces son mi ancla.'},en:{p:'anchor',e:'You are my anchor.'},de:{p:'Anker',e:'Du bist mein Anker.'}},
-  {es:{p:'magia',e:'La magia de lo cotidiano.'},en:{p:'magic',e:'The magic of life.'},de:{p:'Zauber',e:'Der Zauber des Lebens.'}},
-  {es:{p:'crecimiento',e:'El crecimiento es lento y hermoso.'},en:{p:'growth',e:'Personal growth takes time.'},de:{p:'Wachstum',e:'Persönliches Wachstum.'}},
-  {es:{p:'brillar',e:'Dejate brillar.'},en:{p:'shine',e:'Let yourself glow.'},de:{p:'Leuchten',e:'Lass dich leuchten.'}},
-  {es:{p:'descanso',e:'El descanso es necesario.'},en:{p:'rest',e:'Rest is productive.'},de:{p:'Rast',e:'Gönn dir Rast.'}},
-  {es:{p:'ternura',e:'Con ternura se hace todo.'},en:{p:'tenderness',e:'A tender heart.'},de:{p:'Zartheit',e:'Mit Zartheit handeln.'}},
-  {es:{p:'abrazo',e:'Un abrazo lo cura todo.'},en:{p:'embrace',e:'Let yourself be held.'},de:{p:'Umarmen',e:'Lass dich umarmen.'}},
-  {es:{p:'fortaleza',e:'La fortaleza interior.'},en:{p:'resilience',e:'You are so resilient.'},de:{p:'Stärke',e:'Innere Stärke zeigen.'}},
-  {es:{p:'suavidad',e:'Con suavidad por la vida.'},en:{p:'gentleness',e:'Be gentle with yourself.'},de:{p:'Sanftmut',e:'Mit Sanftmut durchs Leben.'}},
-  {es:{p:'hogar',e:'Sentirse en hogar.'},en:{p:'belonging',e:'You belong here.'},de:{p:'Geborgenheit',e:'Ich fühle mich geborgen.'}},
-  {es:{p:'vivir plene',e:'La plena alegría de vivir.'},en:{p:'thrive',e:'I want to thrive.'},de:{p:'Lebensfreude',e:'Voller Lebensfreude sein.'}},
-  {es:{p:'añoranza',e:'Siento añoranza de ese lugar.'},en:{p:'longing',e:'A deep longing inside.'},de:{p:'Sehnsucht',e:'Die Sehnsucht nach Hause.'}},
-  {es:{p:'explorar',e:'Las ganas de explorar el mundo.'},en:{p:'wanderlust',e:'Follow your wanderlust.'},de:{p:'Wanderlust',e:'Meine Wanderlust ist groß.'}},
-  {es:{p:'calidez',e:'Un lugar lleno de calidez.'},en:{p:'coziness',e:'The café was so cozy.'},de:{p:'Gemütlichkeit',e:'Die Gemütlichkeit des Cafés.'}},
-  {es:{p:'merecido descanso',e:'¡Por fin el merecido descanso!'},en:{p:'knock off',e:'Finally, time to rest.'},de:{p:'Feierabend',e:'Endlich Feierabend!'}},
-  {es:{p:'compañía',e:'La belleza de estar juntes.'},en:{p:'togetherness',e:'Together is beautiful.'},de:{p:'Zweisamkeit',e:'Schöne Zweisamkeit genießen.'}},
-  {es:{p:'dolor del mundo',e:'Sentir el dolor del mundo.'},en:{p:'world-pain',e:'Feel the world deeply.'},de:{p:'Weltschmerz',e:'Ich fühle Weltschmerz.'}},
-  {es:{p:'compasión',e:'Con compasión hacia todo.'},en:{p:'compassion',e:'Show compassion to others.'},de:{p:'Mitgefühl',e:'Zeig Mitgefühl.'}},
-  {es:{p:'pertenencia',e:'Sentirse contenide y segure.'},en:{p:'held',e:'You are held.'},de:{p:'Aufgehoben',e:'Ich fühle mich aufgehoben.'}},
-  {es:{p:'llamado lejano',e:'El llamado de lo lejano.'},en:{p:'faraway',e:'My heart calls to faraway.'},de:{p:'Fernweh',e:'Ich habe so ein Fernweh.'}},
+  {nivel:'A1',es:{p:'comer',e:'Como todos los días.'},en:{p:'eat',e:'I eat every day.'},de:{p:'essen',e:'Ich esse jeden Tag.'}},
+  {nivel:'B1',es:{p:'propuesta',e:'Tengo una propuesta.'},en:{p:'proposal',e:'I have a proposal.'},de:{p:'Vorschlag',e:'Ich habe einen Vorschlag.'}},
+  {nivel:'A2',es:{p:'precio',e:'¿Cuál es el precio?'},en:{p:'price',e:'What is the price?'},de:{p:'Preis',e:'Was ist der Preis?'}},
+  {nivel:'A1',es:{p:'hablar',e:'¿Hablás alemán?'},en:{p:'speak',e:'Do you speak German?'},de:{p:'sprechen',e:'Sprechen Sie Deutsch?'}},
+  {nivel:'B1',es:{p:'opinión',e:'¿Cuál es tu opinión?'},en:{p:'opinion',e:'What is your opinion?'},de:{p:'Meinung',e:'Was ist Ihre Meinung?'}},
+  {nivel:'A2',es:{p:'vacaciones',e:'Voy de vacaciones.'},en:{p:'vacation',e:'I go on vacation.'},de:{p:'Urlaub',e:'Ich fahre in Urlaub.'}},
+  {nivel:'A1',es:{p:'familia',e:'Mi familia es grande.'},en:{p:'family',e:'My family is big.'},de:{p:'Familie',e:'Meine Familie ist groß.'}},
+  {nivel:'B1',es:{p:'entrevista',e:'Tengo una entrevista de trabajo.'},en:{p:'job interview',e:'I have a job interview.'},de:{p:'Vorstellungsgespräch',e:'Ich habe ein Vorstellungsgespräch.'}},
+  {nivel:'A2',es:{p:'médico',e:'Tengo cita con el médico.'},en:{p:'doctor',e:'I have an appointment with the doctor.'},de:{p:'Arzt',e:'Ich habe einen Termin beim Arzt.'}},
+  {nivel:'A1',es:{p:'agua',e:'Quiero agua, por favor.'},en:{p:'water',e:'I want water, please.'},de:{p:'Wasser',e:'Ich möchte Wasser, bitte.'}},
+  {nivel:'B1',es:{p:'desafío',e:'Es un gran desafío.'},en:{p:'challenge',e:'It is a big challenge.'},de:{p:'Herausforderung',e:'Das ist eine große Herausforderung.'}},
+  {nivel:'A2',es:{p:'supermercado',e:'Voy al supermercado.'},en:{p:'supermarket',e:'I go to the supermarket.'},de:{p:'Supermarkt',e:'Ich gehe zum Supermarkt.'}},
+  {nivel:'A1',es:{p:'trabajo',e:'Me gusta mi trabajo.'},en:{p:'work',e:'I like my work.'},de:{p:'Arbeit',e:'Ich mag meine Arbeit.'}},
+  {nivel:'B1',es:{p:'solución',e:'Encontramos una solución.'},en:{p:'solution',e:'We found a solution.'},de:{p:'Lösung',e:'Wir haben eine Lösung gefunden.'}},
+  {nivel:'A2',es:{p:'transporte',e:'El transporte público es bueno.'},en:{p:'transport',e:'Public transport is good.'},de:{p:'Verkehr',e:'Der öffentliche Verkehr ist gut.'}},
+  {nivel:'A1',es:{p:'ciudad',e:'Vivo en una ciudad grande.'},en:{p:'city',e:'I live in a big city.'},de:{p:'Stadt',e:'Ich wohne in einer großen Stadt.'}},
+  {nivel:'B1',es:{p:'contrato',e:'Firmé el contrato hoy.'},en:{p:'contract',e:'I signed the contract today.'},de:{p:'Vertrag',e:'Ich habe heute den Vertrag unterschrieben.'}},
+  {nivel:'A2',es:{p:'dirección',e:'¿Cuál es tu dirección?'},en:{p:'address',e:'What is your address?'},de:{p:'Adresse',e:'Was ist deine Adresse?'}},
+  {nivel:'A1',es:{p:'libro',e:'Estoy leyendo un libro.'},en:{p:'book',e:'I am reading a book.'},de:{p:'Buch',e:'Ich lese ein Buch.'}},
+  {nivel:'B1',es:{p:'experiencia',e:'Tengo mucha experiencia.'},en:{p:'experience',e:'I have a lot of experience.'},de:{p:'Erfahrung',e:'Ich habe viel Erfahrung.'}},
+  {nivel:'A2',es:{p:'banco',e:'El banco cierra a las cuatro.'},en:{p:'bank',e:'The bank closes at four.'},de:{p:'Bank',e:'Die Bank schließt um vier.'}},
+  {nivel:'A1',es:{p:'amigo',e:'Es mi mejor amigo.'},en:{p:'friend',e:'He is my best friend.'},de:{p:'Freund',e:'Er ist mein bester Freund.'}},
+  {nivel:'B1',es:{p:'cambio',e:'El cambio es positivo.'},en:{p:'change',e:'Change is positive.'},de:{p:'Veränderung',e:'Die Veränderung ist positiv.'}},
+  {nivel:'A2',es:{p:'reunión',e:'Tengo una reunión a las diez.'},en:{p:'meeting',e:'I have a meeting at ten.'},de:{p:'Besprechung',e:'Ich habe um zehn eine Besprechung.'}},
+  {nivel:'A1',es:{p:'tiempo',e:'No tengo tiempo.'},en:{p:'time',e:'I don\'t have time.'},de:{p:'Zeit',e:'Ich habe keine Zeit.'}},
+  {nivel:'B1',es:{p:'ambiente',e:'Cuidemos el ambiente.'},en:{p:'environment',e:'Let\'s protect the environment.'},de:{p:'Umwelt',e:'Lasst uns die Umwelt schützen.'}},
+  {nivel:'A2',es:{p:'horario',e:'¿Cuál es tu horario?'},en:{p:'schedule',e:'What is your schedule?'},de:{p:'Stundenplan',e:'Was ist dein Stundenplan?'}},
+  {nivel:'A1',es:{p:'casa',e:'Esta es mi casa.'},en:{p:'house',e:'This is my house.'},de:{p:'Haus',e:'Das ist mein Haus.'}},
+  {nivel:'B1',es:{p:'éxito',e:'Te deseo mucho éxito.'},en:{p:'success',e:'I wish you success.'},de:{p:'Erfolg',e:'Ich wünsche dir viel Erfolg.'}},
+  {nivel:'A2',es:{p:'disfrutar',e:'Disfruto la música.'},en:{p:'enjoy',e:'I enjoy music.'},de:{p:'genießen',e:'Ich genieße die Musik.'}},
+  {nivel:'A1',es:{p:'lluvia',e:'Hoy hay mucha lluvia.'},en:{p:'rain',e:'There is a lot of rain today.'},de:{p:'Regen',e:'Heute regnet es viel.'}},
+  {nivel:'B1',es:{p:'queja',e:'Quiero hacer una queja.'},en:{p:'complaint',e:'I want to make a complaint.'},de:{p:'Beschwerde',e:'Ich möchte eine Beschwerde einreichen.'}},
+  {nivel:'A2',es:{p:'comprar',e:'Voy a comprar fruta.'},en:{p:'buy',e:'I am going to buy fruit.'},de:{p:'kaufen',e:'Ich kaufe Obst.'}},
+  {nivel:'A1',es:{p:'despertar',e:'Me despierto a las siete.'},en:{p:'wake up',e:'I wake up at seven.'},de:{p:'aufwachen',e:'Ich wache um sieben auf.'}},
+  {nivel:'B1',es:{p:'seguro',e:'Tengo seguro de salud.'},en:{p:'insurance',e:'I have health insurance.'},de:{p:'Versicherung',e:'Ich habe eine Krankenversicherung.'}},
+  {nivel:'A2',es:{p:'tren',e:'El tren sale a las ocho.'},en:{p:'train',e:'The train leaves at eight.'},de:{p:'Zug',e:'Der Zug fährt um acht ab.'}},
 ];
 
 function getDayOfYear() {
@@ -2097,15 +2103,22 @@ function renderDiario() {
   if(hb.animo>0) bCard.appendChild(el('div',{style:'text-align:center;font-size:12px;color:var(--amber);margin-top:4px'},[['Un día difícil','Día normal','Bien','Muy bien','Excelente'][hb.animo-1]]));
   c.appendChild(bCard);
 
-  // Palabras del día — un concepto en los 3 idiomas
+  // Vocabulario del día — mismo concepto en 3 idiomas, niveles A1/A2/B1
   const hoyIdx=getDayOfYear();
   const entrada=PALABRAS_DIA[hoyIdx%PALABRAS_DIA.length];
   const pCard=div('card');
-  pCard.appendChild(el('div',{style:'font-size:11px;font-weight:600;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px'},['✨ Palabras del día']));
+  const nivelColor={A1:'#15803d',A2:'#b45309',B1:'#6d28d9'};
+  const nivelBg={A1:'#dcfce7',A2:'#fef3c7',B1:'#ede9fe'};
+  const nc=nivelColor[entrada.nivel]||'#6d28d9';
+  const nb=nivelBg[entrada.nivel]||'#ede9fe';
+  const pHdr=div('',[],'display:flex;justify-content:space-between;align-items:center;margin-bottom:14px');
+  pHdr.appendChild(el('div',{style:'font-size:11px;font-weight:600;color:var(--muted);letter-spacing:1px;text-transform:uppercase'},['✨ Vocabulario del día']));
+  pHdr.appendChild(el('span',{style:`font-size:11px;font-weight:700;color:${nc};background:${nb};padding:2px 9px;border-radius:99px`},[entrada.nivel||'']));
+  pCard.appendChild(pHdr);
   [{key:'es',bandera:'🇦🇷',nombre:'Español'},{key:'en',bandera:'🇬🇧',nombre:'English'},{key:'de',bandera:'🇩🇪',nombre:'Deutsch'}].forEach(function(lang,idx){
-    if(idx>0) pCard.appendChild(div('',[],'height:1px;background:var(--border);margin:12px 0'));
+    if(idx>0) pCard.appendChild(div('',[],'height:1px;background:var(--border);margin:10px 0'));
     const pal=entrada[lang.key];
-    pCard.appendChild(el('div',{style:'font-size:11px;color:var(--muted);margin-bottom:4px'},[lang.bandera+' '+lang.nombre]));
+    pCard.appendChild(el('div',{style:'font-size:11px;color:var(--muted);margin-bottom:2px'},[lang.bandera+' '+lang.nombre]));
     pCard.appendChild(el('div',{style:'font-size:22px;font-weight:800;color:var(--accent);margin-bottom:2px'},[pal.p]));
     pCard.appendChild(el('div',{style:'font-size:12px;color:var(--muted);font-style:italic'},['"'+pal.e+'"']));
   });
