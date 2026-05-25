@@ -133,14 +133,14 @@ button{ cursor:pointer }
 }
 .bnav-btn{
   flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
-  padding:6px 1px; gap:1px;
+  padding:6px 2px; gap:2px;
   background:transparent; border:none;
   color:rgba(255,255,255,0.35);
-  font-size:9px; font-weight:500; letter-spacing:0.2px;
+  font-size:11px; font-weight:500; letter-spacing:0.2px;
   transition:color 0.12s;
   min-height:56px;
 }
-.bnav-icon{ font-size:18px; line-height:1.2 }
+.bnav-icon{ font-size:22px; line-height:1.2 }
 .bnav-btn.active{ color:#fff }
 .bnav-btn.active .bnav-icon{ filter:drop-shadow(0 0 6px var(--accent)) }
 
@@ -643,16 +643,14 @@ function render() {
   renderContent();
 }
 
-function setTab(t) { state.tab=t; save(); render(); renderThemePicker(); }
+function setTab(t) { state.tab=t; save(); render(); }
 
 const TAB_LABELS = {
   'diario':   '📋 Diario',
   'rutinas':  '🏃 Rutinas',
   'proyectos':'🌟 Proyectos',
-  'trabajo':  '🏢 Trabajo',
   'finanzas': '💰 Finanzas',
   'menu':     '🍽 Menú',
-  'compras':  '🛒 Compras',
   'notas':    '💭 Notas',
 };
 const TAB_SECTIONS = {
@@ -844,7 +842,6 @@ function renderOnboarding() {
     applyTheme();
     applyAppIcon();
     render();
-    renderThemePicker();
     setTimeout(sbLoadAndMerge, 1000);
     setTimeout(syncGoogleCalendar,800);
   });
@@ -855,6 +852,7 @@ function renderOnboarding() {
 
 function renderPerfilEditor() {
   const c=$('content'); c.innerHTML='';
+  c.appendChild(btn('← Volver','',function(){state.showPerfil=false;render();},'background:none;border:none;color:var(--accent);font-size:13px;font-weight:600;padding:0;cursor:pointer;margin-bottom:14px;display:block'));
   c.appendChild(el('div',{style:'font-size:20px;font-weight:800;margin-bottom:20px'},['Mi perfil']));
 
   const box=div('card',[],`max-width:400px`);
@@ -947,34 +945,12 @@ function applyTheme() {
 }
 
 function renderThemePicker() {
-  let picker=$('theme-picker');
+  const picker=$('theme-picker');
   if(picker) picker.remove();
-  picker=el('div',{id:'theme-picker',style:'position:fixed;bottom:20px;right:16px;z-index:200;display:flex;flex-direction:column;align-items:flex-end;gap:6px'});
-  const THEMES=[
-    {id:'slate',color:'#0f172a',label:'Oscuro'},
-    {id:'rose',color:'#be123c',label:'Rosa'},
-    {id:'violet',color:'#6d28d9',label:'Violeta'},
-    {id:'teal',color:'#0f766e',label:'Verde'},
-    {id:'amber',color:'#b45309',label:'Ámbar'},
-  ];
-  if(state.showThemePicker) {
-    THEMES.forEach(t=>{
-      const row=div('',[],`display:flex;align-items:center;gap:8px;cursor:pointer`);
-      const dot=div('',[],`width:28px;height:28px;border-radius:50%;background:${t.color};border:3px solid ${state.theme===t.id?'#fff':'transparent'};box-shadow:0 2px 8px rgba(0,0,0,0.3);cursor:pointer;flex-shrink:0`);
-      dot.addEventListener('click',()=>{state.theme=t.id;state.showThemePicker=false;save();applyTheme();renderThemePicker();renderTabs();});
-      row.appendChild(el('span',{style:'font-size:12px;font-weight:600;color:#fff;background:rgba(0,0,0,0.5);padding:2px 8px;border-radius:99px'},[t.label]));
-      row.appendChild(dot);
-      picker.appendChild(row);
-    });
-  }
-  const mainBtn=el('div',{style:`width:44px;height:44px;border-radius:50%;background:var(--accent);border:3px solid #fff;box-shadow:0 4px 16px rgba(0,0,0,0.3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:20px`},['🎨']);
-  mainBtn.addEventListener('click',()=>{state.showThemePicker=!state.showThemePicker;renderThemePicker();});
-  picker.appendChild(mainBtn);
-  document.body.appendChild(picker);
 }
 
 function renderTabs() {
-  const allTabs=['diario','rutinas','proyectos','trabajo','finanzas','menu','compras','notas'];
+  const allTabs=['diario','rutinas','proyectos','finanzas','menu','notas'];
   const bn=$('bottom-nav');
   if(bn){
     bn.innerHTML='';
@@ -1215,7 +1191,7 @@ function renderRutinas() {
 
 // ── RENDER MENÚ ──
 function renderMenu() {
-  const c=$('content'); c.innerHTML='';
+  const c=$('content');
 
   // Tabs: semanas + editar
   const topRow=div('',[],`display:flex;gap:6px;margin-bottom:12px;align-items:center`);
@@ -1806,7 +1782,7 @@ function renderFinanzas() {
 
 // ── RENDER COMPRAS ──
 function renderCompras() {
-  const c=$('content'); c.innerHTML='';
+  const c=$('content');
   const card=div('',[],'background:#f0fdf4;border:1px solid #86efac;border-radius:14px;padding:14px;margin-bottom:12px');
   card.appendChild(el('div',{style:'font-size:13px;font-weight:700;color:#15803d;margin-bottom:10px'},['🛒 Lista de compras']));
   const inp=el('input',{id:'compra-inp',placeholder:'Agregar ítem...',style:'flex:1;border:1px solid #86efac;border-radius:9px;padding:10px 12px;font-size:15px;background:#fff;color:#0f172a;outline:none'});
@@ -2248,31 +2224,35 @@ function renderProjCards(tipo) {
 
 function renderProyectosTab() {
   const c=$('content'); c.innerHTML='';
-  c.appendChild(el('div',{style:'font-size:22px;font-weight:800;margin-bottom:16px'},['🌟 Proyectos']));
-  renderProjCards('proyectos');
+  const vista=state.proyVista||'proyectos';
+  const vistaRow=div('',[],`display:flex;gap:6px;margin-bottom:20px`);
+  [{id:'proyectos',label:'🌟 Proyectos'},{id:'trabajo',label:'🏢 Trabajo'}].forEach(function(v){
+    const active=vista===v.id;
+    vistaRow.appendChild(btn(v.label,'',function(){state.proyVista=v.id;render();},`flex:1;border-radius:12px;font-size:13px;font-weight:${active?700:400};padding:10px 4px;background:${active?'var(--accent)':'var(--surface)'};color:${active?'#fff':'var(--muted)'};border:1.5px solid ${active?'var(--accent)':'var(--border)'};transition:all 0.15s`));
+  });
+  c.appendChild(vistaRow);
+  renderProjCards(vista);
 }
 
 function renderTrabajo() {
-  const c=$('content'); c.innerHTML='';
-  c.appendChild(el('div',{style:'font-size:22px;font-weight:800;margin-bottom:16px'},['🏢 Trabajo']));
-  renderProjCards('trabajo');
+  renderProyectosTab();
 }
 
-// ── VIDA — menú + finanzas + compras ──
-function renderVida() {
+// ── MENÚ + COMPRAS ──
+function renderMenuTab() {
   const c=$('content'); c.innerHTML='';
+  const vista=(state.vidaVista==='compras')?'compras':'menú';
   const vistaRow=div('',[],`display:flex;gap:6px;margin-bottom:20px`);
-  ['menú','finanzas','compras'].forEach(v=>{
-    const labels={'menú':'🍽 Menú','finanzas':'💰 Finanzas','compras':'🛒 Compras'};
-    const active=(state.vidaVista||'menú')===v;
-    vistaRow.appendChild(btn(labels[v],'',()=>{ state.vidaVista=v; render(); },`flex:1;border-radius:12px;font-size:13px;font-weight:${active?700:400};padding:10px 4px;background:${active?'var(--accent)':'var(--surface)'};color:${active?'#fff':'var(--muted)'};border:1.5px solid ${active?'var(--accent)':'var(--border)'};transition:all 0.15s`));
+  [{id:'menú',label:'🍽 Menú'},{id:'compras',label:'🛒 Compras'}].forEach(function(v){
+    const active=vista===v.id;
+    vistaRow.appendChild(btn(v.label,'',function(){state.vidaVista=v.id;render();},`flex:1;border-radius:12px;font-size:13px;font-weight:${active?700:400};padding:10px 4px;background:${active?'var(--accent)':'var(--surface)'};color:${active?'#fff':'var(--muted)'};border:1.5px solid ${active?'var(--accent)':'var(--border)'};transition:all 0.15s`));
   });
   c.appendChild(vistaRow);
-  const v=state.vidaVista||'menú';
-  if(v==='menú') renderMenu();
-  else if(v==='finanzas') renderFinanzas();
-  else if(v==='compras') renderCompras();
+  if(vista==='compras') renderCompras();
+  else renderMenu();
 }
+
+function renderVida() { renderMenuTab(); }
 
 // ── PERSONAL — notas ──
 function renderPersonal() {
@@ -2288,21 +2268,25 @@ const PAGE_TITLES = {
 };
 function renderContent() {
   try {
-  // Update header name
+  // Update header name (tap to open perfil)
   const un=$('mobile-username');
-  if(un) un.textContent=((state.perfil&&state.perfil.emoji)||'')+((state.perfil&&state.perfil.nombre)?` ${state.perfil.nombre}`:'Mi app');
+  if(un) {
+    un.textContent=((state.perfil&&state.perfil.emoji)||'')+((state.perfil&&state.perfil.nombre)?` ${state.perfil.nombre}`:'Mi app');
+    un.style.cursor='pointer';
+    un.onclick=function(){ state.showPerfil=true; render(); };
+  }
   const t=state.tab;
   if(state.showPerfil){ renderPerfilEditor(); return; }
   if(t==='diario') renderDiario();
   else if(t==='rutinas') renderRutinas();
   else if(t==='proyectos') renderProyectosTab();
-  else if(t==='trabajo') renderTrabajo();
+  else if(t==='trabajo'){state.proyVista='trabajo';state.tab='proyectos';renderProyectosTab();}
   else if(t==='finanzas') renderFinanzas();
-  else if(t==='menu') renderMenu();
-  else if(t==='compras') renderCompras();
+  else if(t==='menu') renderMenuTab();
+  else if(t==='compras'){state.vidaVista='compras';state.tab='menu';renderMenuTab();}
   else if(t==='notas') renderNotas();
   else if(t==='casa'){state.tab='rutinas';renderRutinas();}
-  else if(t==='vida'||t==='personal'){state.tab='menu';renderMenu();}
+  else if(t==='vida'||t==='personal'){state.tab='menu';renderMenuTab();}
   } catch(err) {
     console.error('renderContent error:', err);
     const c=$('content');
@@ -2472,7 +2456,6 @@ if(!state.perfil) {
   ocultarSplash();
 } else {
   render();
-  renderThemePicker();
   ocultarSplash();
   setTimeout(sbLoadAndMerge, 1000);
 }
