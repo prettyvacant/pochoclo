@@ -654,9 +654,9 @@ const TAB_LABELS = {
   'notas':    '💭 Notas',
 };
 const TAB_SECTIONS = {
-  'Diario':   ['diario','rutinas'],
-  'Hogar':    ['casa','trabajo'],
-  'Vida':     ['vida','personal'],
+  'Personal':  ['diario','rutinas'],
+  'Trabajo':   ['proyectos','finanzas'],
+  'Vida':      ['menu','notas'],
 };
 
 const EMOJIS_PERFIL = ['🌟','✨','🌈','🎭','🌸','🦋','🎀','🍉','🌻','🍀','🔥','💜','🏳️‍🌈','🏳️‍⚧️'];
@@ -978,24 +978,23 @@ function renderTabs() {
          el('div',{style:'font-size:11px;color:#475569'},[(state.perfil&&state.perfil.año)||new Date().getFullYear()+' ✏️'])
        ])
       ]);
-    perfilRow.addEventListener('click',()=>{state.showPerfil=true;render();});
-    perfilRow.addEventListener('mouseenter',()=>perfilRow.style.background='rgba(255,255,255,0.1)');
-    perfilRow.addEventListener('mouseleave',()=>perfilRow.style.background='transparent');
+    perfilRow.addEventListener('click',function(){state.showPerfil=true;render();});
+    perfilRow.addEventListener('mouseenter',function(){perfilRow.style.background='rgba(255,255,255,0.1)';});
+    perfilRow.addEventListener('mouseleave',function(){perfilRow.style.background='transparent';});
     sb.appendChild(perfilRow);
-    Object.entries(TAB_SECTIONS).forEach(([section,tabs])=>{
+    Object.entries(TAB_SECTIONS).forEach(function(entry){
+      var section=entry[0]; var tabs=entry[1];
       sb.appendChild(el('div',{class:'sidebar-section'},[section]));
-      tabs.forEach(t=>{
-        const b=el('button',{class:'sidebar-btn'+(state.tab===t?' active':''),onclick:()=>{state.showPerfil=false;setTab(t);}},[ TAB_LABELS[t]||t]);
+      tabs.forEach(function(t){
+        const b=el('button',{class:'sidebar-btn'+(state.tab===t?' active':'')},[ TAB_LABELS[t]||t]);
+        b.addEventListener('click',function(){state.showPerfil=false;setTab(t);});
         sb.appendChild(b);
       });
     });
-    sb.appendChild(el('div',{class:'sidebar-section'},['Cuenta']));
-    const perfilBtn=el('button',{class:'sidebar-btn'+(state.showPerfil?' active':''),onclick:()=>{state.showPerfil=true;render();}},['👤 Mi perfil']);
-    sb.appendChild(perfilBtn);
-    const syncRow=el('div',{style:'display:flex;align-items:center;justify-content:space-between;padding:6px 12px;margin-top:4px'});
+    const syncRow=el('div',{style:'margin-top:auto;display:flex;align-items:center;justify-content:space-between;padding:6px 12px'});
     syncRow.appendChild(el('span',{id:'sync-indicator',style:'font-size:12px;color:#94a3b8'},['☁️']));
     const syncBtn=el('button',{style:'font-size:11px;color:#94a3b8;background:none;border:none;cursor:pointer;padding:4px 6px'},['↻ Sync']);
-    syncBtn.addEventListener('click',()=>sbLoadAndMerge());
+    syncBtn.addEventListener('click',function(){sbLoadAndMerge();});
     syncRow.appendChild(syncBtn);
     sb.appendChild(syncRow);
   }
