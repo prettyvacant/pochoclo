@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>🐱 Pipina & Meme — Tamagotchi</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #faf7ff;
+    --card: #fff;
+    --text: #2d1b69;
+    --muted: #8b7ec8;
+    --pip: #c084fc;
+    --pip-dark: #9333ea;
+    --meme: #f472b6;
+    --meme-dark: #db2777;
+    --shadow: 0 4px 24px rgba(100,60,180,0.10);
+    --radius: 22px;
+  }
+
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 16px;
+    overflow-x: hidden;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 1.3rem;
+    color: var(--muted);
+    margin-bottom: 20px;
+    letter-spacing: 0.05em;
+  }
+
+  .cats {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .cat-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 20px;
+    width: 100%;
+    max-width: 340px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .cat-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .cat-name {
+    font-size: 1.4rem;
+    font-weight: 700;
+  }
+
+  .cat-name.pipina { color: var(--pip-dark); }
+  .cat-name.meme   { color: var(--meme-dark); }
+
+  .cat-age {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  /* SVG sphynx cat illustration */
+  .cat-scene {
+    position: relative;
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #f3e8ff 0%, #fce7f3 100%);
+  }
+
+  .cat-scene.pipina-bg {
+    background: linear-gradient(135deg, #ede9fe 0%, #f5d0fe 100%);
+  }
+
+  .cat-scene.meme-bg {
+    background: linear-gradient(135deg, #fce7f3 0%, #ffd6e7 100%);
+  }
+
+  .cat-sprite {
+    font-size: 80px;
+    transition: transform 0.3s ease;
+    display: block;
+    line-height: 1;
+    user-select: none;
+  }
+
+  .cat-sprite.bounce {
+    animation: bounce 0.4s ease;
+  }
+
+  .cat-sprite.sleeping {
+    animation: snooze 2s ease-in-out infinite;
+  }
+
+  .cat-sprite.sad {
+    filter: grayscale(50%);
+    opacity: 0.7;
+  }
+
+  .cat-sprite.happy {
+    animation: wiggle 0.5s ease;
+  }
+
+  @keyframes bounce {
+    0%,100% { transform: translateY(0); }
+    40%     { transform: translateY(-18px); }
+  }
+
+  @keyframes wiggle {
+    0%,100% { transform: rotate(0deg); }
+    25%     { transform: rotate(-8deg); }
+    75%     { transform: rotate(8deg); }
+  }
+
+  @keyframes snooze {
+    0%,100% { transform: translateY(0) scale(1); }
+    50%     { transform: translateY(4px) scale(0.97); }
+  }
+
+  .zz {
+    position: absolute;
+    top: 12px;
+    right: 20px;
+    font-size: 1.1rem;
+    color: var(--muted);
+    animation: zzfloat 2s ease-in-out infinite;
+    opacity: 0;
+  }
+
+  .zz.visible { opacity: 1; }
+
+  @keyframes zzfloat {
+    0%,100% { transform: translateY(0); opacity: 0.6; }
+    50%     { transform: translateY(-8px); opacity: 1; }
+  }
+
+  .mood-bubble {
+    position: absolute;
+    top: 10px;
+    left: 14px;
+    font-size: 1.3rem;
+    animation: pop 0.3s ease;
+  }
+
+  @keyframes pop {
+    0%   { transform: scale(0); }
+    70%  { transform: scale(1.2); }
+    100% { transform: scale(1); }
+  }
+
+  /* Stats bars */
+  .stats { display: flex; flex-direction: column; gap: 8px; }
+
+  .stat-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .stat-label {
+    font-size: 0.78rem;
+    width: 72px;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+
+  .stat-bar {
+    flex: 1;
+    height: 10px;
+    border-radius: 99px;
+    background: #ede9fe;
+    overflow: hidden;
+  }
+
+  .stat-fill {
+    height: 100%;
+    border-radius: 99px;
+    transition: width 0.5s ease;
+  }
+
+  .fill-hambre  { background: #fb923c; }
+  .fill-feliz   { background: #facc15; }
+  .fill-energia { background: #34d399; }
+  .fill-higiene { background: #60a5fa; }
+  .fill-salud   { background: #f472b6; }
+
+  .stat-val {
+    font-size: 0.75rem;
+    color: var(--muted);
+    width: 28px;
+    text-align: right;
+  }
+
+  /* Action buttons */
+  .actions {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+
+  .action-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 4px;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--text);
+    transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+    background: #f3e8ff;
+  }
+
+  .action-btn:active { transform: scale(0.93); }
+
+  .action-btn .icon { font-size: 1.5rem; }
+
+  .action-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .action-btn.pip { background: #ede9fe; }
+  .action-btn.mem { background: #fce7f3; }
+
+  /* Status message */
+  .cat-status {
+    font-size: 0.82rem;
+    text-align: center;
+    color: var(--muted);
+    font-style: italic;
+    min-height: 1.1em;
+  }
+
+  /* Top bar */
+  .topbar {
+    text-align: center;
+    margin-bottom: 18px;
+  }
+
+  .clock {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* Alert banner */
+  .alert {
+    background: #fef9c3;
+    border: 1.5px solid #fde047;
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 0.82rem;
+    color: #713f12;
+    text-align: center;
+    display: none;
+    margin-bottom: 12px;
+  }
+
+  .alert.visible { display: block; }
+
+  /* Hunger warning overlay */
+  .hunger-warn {
+    position: absolute;
+    bottom: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.7rem;
+    background: rgba(251,146,60,0.9);
+    color: #fff;
+    border-radius: 99px;
+    padding: 2px 10px;
+    white-space: nowrap;
+    display: none;
+  }
+
+  .hunger-warn.visible { display: block; }
+
+  footer {
+    text-align: center;
+    margin-top: 28px;
+    font-size: 0.72rem;
+    color: var(--muted);
+    opacity: 0.7;
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>🐾 Pipina & Meme 🐾</h1>
+  <div class="clock" id="clock">--:--</div>
+</div>
+
+<div class="alert" id="alert"></div>
+
+<div class="cats">
+  <!-- PIPINA -->
+  <div class="cat-card" id="card-pipina">
+    <div class="cat-header">
+      <div>
+        <div class="cat-name pipina">Pipina</div>
+        <div class="cat-age" id="age-pipina">Sphynx 🐾</div>
+      </div>
+      <div style="margin-left:auto;font-size:1.6rem" title="Humor">
+        <span id="mood-pipina">😸</span>
+      </div>
+    </div>
+
+    <div class="cat-scene pipina-bg" id="scene-pipina">
+      <span class="cat-sprite" id="sprite-pipina">🐱</span>
+      <span class="zz" id="zz-pipina">💤</span>
+      <span class="mood-bubble" id="bubble-pipina"></span>
+      <span class="hunger-warn" id="hwarn-pipina">¡Tengo hambre! 🍽</span>
+    </div>
+
+    <div class="stats">
+      <div class="stat-row">
+        <span class="stat-label">🍗 Hambre</span>
+        <div class="stat-bar"><div class="stat-fill fill-hambre" id="bar-hambre-pipina" style="width:100%"></div></div>
+        <span class="stat-val" id="val-hambre-pipina">100</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">😊 Felicidad</span>
+        <div class="stat-bar"><div class="stat-fill fill-feliz" id="bar-feliz-pipina" style="width:100%"></div></div>
+        <span class="stat-val" id="val-feliz-pipina">100</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">⚡ Energía</span>
+        <div class="stat-bar"><div class="stat-fill fill-energia" id="bar-energia-pipina" style="width:100%"></div></div>
+        <span class="stat-val" id="val-energia-pipina">100</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">🛁 Higiene</span>
+        <div class="stat-bar"><div class="stat-fill fill-higiene" id="bar-higiene-pipina" style="width:100%"></div></div>
+        <span class="stat-val" id="val-higiene-pipina">100</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">❤️ Salud</span>
+        <div class="stat-bar"><div class="stat-fill fill-salud" id="bar-salud-pipina" style="width:100%"></div></div>
+        <span class="stat-val" id="val-salud-pipina">100</span>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="action-btn pip" onclick="feed('pipina')">
+        <span class="icon">🍗</span>Comer
+      </button>
+      <button class="action-btn pip" onclick="play('pipina')">
+        <span class="icon">🧶</span>Jugar
+      </button>
+      <button class="action-btn pip" onclick="groom('pipina')">
+        <span class="icon">🛁</span>Baño
+      </button>
+      <button class="action-btn pip" onclick="sleep_('pipina')">
+        <span class="icon">🌙</span>Dormir
+      </button>
+    </div>
+
+    <div class="cat-status" id="status-pipina">Pipina está tranquila...</div>
+  </div>
+
+  <!-- MEME -->
+  <div class="cat-card" id="card-meme">
+    <div class="cat-header">
+      <div>
+        <div class="cat-name meme">Meme</div>
+        <div class="cat-age" id="age-meme">Sphynx 🐾</div>
+      </div>
+      <div style="margin-left:auto;font-size:1.6rem" title="Humor">
+        <span id="mood-meme">😸</span>
+      </div>
+    </div>
+
+    <div class="cat-scene meme-bg" id="scene-meme">
+      <span class="cat-sprite" id="sprite-meme">🐱</span>
+      <span class="zz" id="zz-meme">💤</span>
+      <span class="mood-bubble" id="bubble-meme"></span>
+      <span class="hunger-warn" id="hwarn-meme">¡Tengo hambre! 🍽</span>
+    </div>
+
+    <div class="stats">
+      <div class="stat-row">
+        <span class="stat-label">🍗 Hambre</span>
+        <div class="stat-bar"><div class="stat-fill fill-hambre" id="bar-hambre-meme" style="width:100%"></div></div>
+        <span class="stat-val" id="val-hambre-meme">100</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">😊 Felicidad</span>
+        <div class="stat-bar"><div class="stat-fill fill-feliz" id="bar-feliz-meme" style="width:100%"></div></div>
+        <span class="stat-val" id="val-feliz-meme">100</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">⚡ Energía</span>
+        <div class="stat-bar"><div class="stat-fill fill-energia" id="bar-energia-meme" style="width:100%"></div></div>
+        <span class="stat-val" id="val-energia-meme">100</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">🛁 Higiene</span>
+        <div class="stat-bar"><div class="stat-fill fill-higiene" id="bar-higiene-meme" style="width:100%"></div></div>
+        <span class="stat-val" id="val-higiene-meme">100</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">❤️ Salud</span>
+        <div class="stat-bar"><div class="stat-fill fill-salud" id="bar-salud-meme" style="width:100%"></div></div>
+        <span class="stat-val" id="val-salud-meme">100</span>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="action-btn mem" onclick="feed('meme')">
+        <span class="icon">🍗</span>Comer
+      </button>
+      <button class="action-btn mem" onclick="play('meme')">
+        <span class="icon">🧶</span>Jugar
+      </button>
+      <button class="action-btn mem" onclick="groom('meme')">
+        <span class="icon">🛁</span>Baño
+      </button>
+      <button class="action-btn mem" onclick="sleep_('meme')">
+        <span class="icon">🌙</span>Dormir
+      </button>
+    </div>
+
+    <div class="cat-status" id="status-meme">Meme está tranquila...</div>
+  </div>
+</div>
+
+<footer>Hecho con amor 🐾 Pipina & Meme merecen lo mejor</footer>
+
+<script>
+// ── State ────────────────────────────────────────────────────────────────────
+
+const SAVE_KEY = 'gatas_v1';
+const TICK_MS  = 8000;  // every 8s decay one step
+const SLEEP_TICKS = 8;  // 8 ticks = ~64s of sleeping
+
+const SPRITES = {
+  happy:    '😸',
+  normal:   '🐱',
+  hungry:   '😾',
+  sleepy:   '😴',
+  sad:      '😿',
+  sick:     '🤒',
+  dead:     '💀',
+  playing:  '🙀',
+  eating:   '😋',
+  bathing:  '🛁',
+};
+
+const MOOD_EMOJI = val => {
+  if (val >= 80) return '😸';
+  if (val >= 60) return '😊';
+  if (val >= 40) return '😐';
+  if (val >= 20) return '😿';
+  return '💀';
+};
+
+function defaultCat(name) {
+  return {
+    name,
+    hambre:  100,
+    feliz:   100,
+    energia: 100,
+    higiene: 100,
+    salud:   100,
+    sleeping:  false,
+    sleepTicks: 0,
+    alive:     true,
+    lastTick:  Date.now(),
+  };
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch(e) { return null; }
+}
+
+function saveState() {
+  localStorage.setItem(SAVE_KEY, JSON.stringify({
+    pipina: cats.pipina,
+    meme:   cats.meme,
+  }));
+}
+
+const saved = loadState();
+const cats = {
+  pipina: saved && saved.pipina ? saved.pipina : defaultCat('pipina'),
+  meme:   saved && saved.meme   ? saved.meme   : defaultCat('meme'),
+};
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+
+function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+function showBubble(id, emoji) {
+  const el = document.getElementById('bubble-' + id);
+  if (!el) return;
+  el.textContent = emoji;
+  el.style.display = 'block';
+  setTimeout(function() { el.textContent = ''; }, 1400);
+}
+
+function animateSprite(id, cls) {
+  const el = document.getElementById('sprite-' + id);
+  if (!el) return;
+  el.classList.remove('bounce','wiggle','happy');
+  void el.offsetWidth;
+  el.classList.add(cls);
+  setTimeout(function() { el.classList.remove(cls); }, 600);
+}
+
+function setStatus(id, msg) {
+  const el = document.getElementById('status-' + id);
+  if (el) el.textContent = msg;
+}
+
+function showAlert(msg) {
+  const el = document.getElementById('alert');
+  el.textContent = msg;
+  el.classList.add('visible');
+  setTimeout(function() { el.classList.remove('visible'); }, 4000);
+}
+
+// ── Render ───────────────────────────────────────────────────────────────────
+
+function renderCat(id) {
+  const c = cats[id];
+
+  ['hambre','feliz','energia','higiene','salud'].forEach(function(stat) {
+    const bar = document.getElementById('bar-' + stat + '-' + id);
+    const val = document.getElementById('val-' + stat + '-' + id);
+    if (bar) bar.style.width = c[stat] + '%';
+    if (val) val.textContent = Math.round(c[stat]);
+  });
+
+  const sprite  = document.getElementById('sprite-' + id);
+  const zz      = document.getElementById('zz-' + id);
+  const hwarn   = document.getElementById('hwarn-' + id);
+  const moodEl  = document.getElementById('mood-' + id);
+
+  if (!c.alive) {
+    if (sprite)  sprite.textContent = SPRITES.dead;
+    if (moodEl)  moodEl.textContent = '💀';
+    setStatus(id, c.name.charAt(0).toUpperCase() + c.name.slice(1) + ' necesita descanso eterno... 💔');
+    return;
+  }
+
+  // Choose sprite
+  let spr = SPRITES.normal;
+  if (c.sleeping)       spr = SPRITES.sleepy;
+  else if (c.hambre < 20) spr = SPRITES.hungry;
+  else if (c.salud < 30)  spr = SPRITES.sick;
+  else if (c.feliz > 80)  spr = SPRITES.happy;
+
+  if (sprite)  sprite.textContent = spr;
+  if (zz)      zz.classList.toggle('visible', c.sleeping);
+  if (hwarn)   hwarn.classList.toggle('visible', c.hambre < 20 && !c.sleeping);
+  if (moodEl)  moodEl.textContent = MOOD_EMOJI(Math.min(c.feliz, c.salud));
+
+  // Sleeping class on sprite
+  if (sprite) {
+    sprite.classList.toggle('sleeping', c.sleeping);
+    sprite.classList.toggle('sad', c.feliz < 30 && !c.sleeping);
+  }
+
+  // Status text
+  const nombre = c.name.charAt(0).toUpperCase() + c.name.slice(1);
+  let msg = nombre + ' está tranquila...';
+  if (c.sleeping)        msg = nombre + ' está durmiendo... 💤';
+  else if (c.salud < 20) msg = '⚠️ ' + nombre + ' se siente muy mal';
+  else if (c.hambre < 20) msg = nombre + ' tiene mucha hambre... 😾';
+  else if (c.higiene < 20) msg = nombre + ' necesita un baño 🛁';
+  else if (c.feliz < 30)  msg = nombre + ' está triste... 😿';
+  else if (c.feliz > 85)  msg = nombre + ' está muy feliz! 😸';
+  setStatus(id, msg);
+}
+
+function render() {
+  renderCat('pipina');
+  renderCat('meme');
+  updateClock();
+}
+
+function updateClock() {
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2,'0');
+  const m = String(now.getMinutes()).padStart(2,'0');
+  const el = document.getElementById('clock');
+  if (el) el.textContent = h + ':' + m;
+}
+
+// ── Actions ──────────────────────────────────────────────────────────────────
+
+function feed(id) {
+  const c = cats[id];
+  if (!c.alive) return showAlert('💔 ' + c.name + ' ya no puede comer...');
+  if (c.sleeping) {
+    setStatus(id, c.name + ' está dormida, dejala descansar...');
+    return;
+  }
+  c.hambre  = clamp(c.hambre  + 30, 0, 100);
+  c.energia = clamp(c.energia + 5,  0, 100);
+  animateSprite(id, 'bounce');
+  showBubble(id, '🍗');
+  setStatus(id, '¡Nom nom nom! 😋');
+  if (navigator.vibrate) navigator.vibrate(20);
+  saveState();
+  render();
+}
+
+function play(id) {
+  const c = cats[id];
+  if (!c.alive) return;
+  if (c.sleeping) { setStatus(id, c.name + ' está durmiendo...'); return; }
+  if (c.energia < 15) {
+    setStatus(id, c.name + ' está muy cansada para jugar...');
+    showBubble(id, '😴');
+    return;
+  }
+  c.feliz   = clamp(c.feliz   + 25, 0, 100);
+  c.energia = clamp(c.energia - 20, 0, 100);
+  c.hambre  = clamp(c.hambre  - 8,  0, 100);
+  animateSprite(id, 'wiggle');
+  showBubble(id, '🧶');
+  if (navigator.vibrate) navigator.vibrate([15, 10, 15]);
+  saveState();
+  render();
+}
+
+function groom(id) {
+  const c = cats[id];
+  if (!c.alive) return;
+  if (c.sleeping) { setStatus(id, 'Shhh... ' + c.name + ' duerme'); return; }
+  c.higiene = clamp(c.higiene + 35, 0, 100);
+  c.feliz   = clamp(c.feliz   + 8,  0, 100);
+  c.salud   = clamp(c.salud   + 5,  0, 100);
+  animateSprite(id, 'bounce');
+  showBubble(id, '✨');
+  if (navigator.vibrate) navigator.vibrate(20);
+  saveState();
+  render();
+}
+
+function sleep_(id) {
+  const c = cats[id];
+  if (!c.alive) return;
+  if (c.sleeping) {
+    // Wake up
+    c.sleeping = false;
+    c.sleepTicks = 0;
+    showBubble(id, '☀️');
+    setStatus(id, c.name + ' se despertó!');
+  } else {
+    c.sleeping = true;
+    c.sleepTicks = 0;
+    showBubble(id, '💤');
+    setStatus(id, c.name + ' se está durmiendo...');
+  }
+  saveState();
+  render();
+}
+
+// ── Game tick ────────────────────────────────────────────────────────────────
+
+function tick(id) {
+  const c = cats[id];
+  if (!c.alive) return;
+
+  if (c.sleeping) {
+    c.energia   = clamp(c.energia + 12, 0, 100);
+    c.sleepTicks++;
+    if (c.sleepTicks >= SLEEP_TICKS) {
+      c.sleeping   = false;
+      c.sleepTicks = 0;
+      showBubble(id, '☀️');
+    }
+    return;
+  }
+
+  // Natural decay
+  c.hambre  = clamp(c.hambre  - 6,  0, 100);
+  c.feliz   = clamp(c.feliz   - 4,  0, 100);
+  c.energia = clamp(c.energia - 3,  0, 100);
+  c.higiene = clamp(c.higiene - 2,  0, 100);
+
+  // Health affected by neglect
+  if (c.hambre < 15)   c.salud = clamp(c.salud - 6, 0, 100);
+  if (c.higiene < 15)  c.salud = clamp(c.salud - 4, 0, 100);
+  if (c.feliz < 15)    c.salud = clamp(c.salud - 3, 0, 100);
+  if (c.hambre > 40 && c.higiene > 40 && c.feliz > 40) {
+    c.salud = clamp(c.salud + 2, 0, 100);
+  }
+
+  // Auto-sleep if exhausted
+  if (c.energia <= 0) {
+    c.sleeping = true;
+    c.sleepTicks = 0;
+    showBubble(id, '💤');
+  }
+
+  // Death
+  if (c.salud <= 0) {
+    c.alive = false;
+    showAlert('💔 ' + c.name.charAt(0).toUpperCase() + c.name.slice(1) + ' necesita atención urgente!');
+  }
+}
+
+function gameTick() {
+  tick('pipina');
+  tick('meme');
+  saveState();
+  render();
+
+  // Warnings
+  ['pipina','meme'].forEach(function(id) {
+    const c = cats[id];
+    if (!c.alive) return;
+    const nombre = c.name.charAt(0).toUpperCase() + c.name.slice(1);
+    if (c.hambre < 20 && !c.sleeping) {
+      showAlert('🍗 ' + nombre + ' tiene hambre!');
+    } else if (c.salud < 25) {
+      showAlert('❤️ ' + nombre + ' se siente mal...');
+    }
+  });
+}
+
+// ── Catch-up ticks (time passed while page was closed) ───────────────────────
+
+function applyCatchUp() {
+  ['pipina','meme'].forEach(function(id) {
+    const c = cats[id];
+    if (!c.alive) return;
+    if (!c.lastTick) { c.lastTick = Date.now(); return; }
+    const elapsed = Date.now() - c.lastTick;
+    const missed  = Math.floor(elapsed / TICK_MS);
+    for (var i = 0; i < Math.min(missed, 30); i++) { tick(id); }
+    c.lastTick = Date.now();
+  });
+  saveState();
+}
+
+// ── Clock ────────────────────────────────────────────────────────────────────
+
+setInterval(function() {
+  gameTick();
+  // Update lastTick timestamp each real tick
+  cats.pipina.lastTick = Date.now();
+  cats.meme.lastTick   = Date.now();
+}, TICK_MS);
+
+setInterval(updateClock, 10000);
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+
+applyCatchUp();
+render();
+updateClock();
+</script>
+</body>
+</html>
